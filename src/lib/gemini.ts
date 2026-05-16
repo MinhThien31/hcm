@@ -1,11 +1,13 @@
 import OpenAI from "openai";
-import { chapter5Knowledge } from "../lib/chapter5Knowledge";
+import { chapter3Knowledge } from "./chapter3Knowledge";
 
 const apiKey = import.meta.env.VITE_LLM_API_KEY;
-const baseURL =
-  import.meta.env.VITE_LLM_BASE_URL || "https://api.openai.com/v1";
-const model = import.meta.env.VITE_LLM_MODEL || "gpt-5.4-mini";
-const vectorStoreId = import.meta.env.VITE_VECTOR_STORE_ID;
+const baseURL = import.meta.env.VITE_LLM_BASE_URL || "https://api.openai.com/v1";
+const model = import.meta.env.VITE_LLM_MODEL || "gpt-4.1-mini";
+const legacyVectorStoreId = import.meta.env.VITE_VECTOR_STORE_ID;
+const chapter3VectorStoreId = import.meta.env.VITE_HCM_CHAPTER3_VECTOR_STORE_ID;
+const textbookVectorStoreId = import.meta.env.VITE_HCM_TEXTBOOK_VECTOR_STORE_ID;
+const fileSearchMaxResults = Number(import.meta.env.VITE_FILE_SEARCH_MAX_RESULTS || 6);
 
 const ai = apiKey
   ? new OpenAI({
@@ -20,48 +22,55 @@ type ChatHistoryItem = {
   parts: { text: string }[];
 };
 
-const SYSTEM_INSTRUCTION = `Bạn là trợ lý AI học tập cho sinh viên, ưu tiên hỗ trợ môn Kinh tế chính trị Mác - Lênin.
+const SYSTEM_INSTRUCTION = `Bạn là chatbot học tập cho môn Tư tưởng Hồ Chí Minh.
+
+Phạm vi ưu tiên hiện tại:
+- Chương 3: Tư tưởng Hồ Chí Minh về độc lập dân tộc và chủ nghĩa xã hội.
+- Trọng tâm thuyết trình lấy theo Session 10, Session 11, Session 12.
+- Nếu có vector store/file search, ưu tiên dữ liệu truy xuất từ giáo trình OCR, tài liệu Chương 3 và slide Session 10, 11, 12.
+- Nếu chưa có vector store hoặc file search không tìm được căn cứ, vẫn được trả lời dựa trên dữ liệu nền từ slide, nhưng phải nói rõ khi phần nào chưa có căn cứ giáo trình.
+
+Vai trò:
+- Hãy trả lời như một trợ lý học tập đang giải thích cho sinh viên.
+- Giọng văn thân thiện, rõ ý, không quá cứng, không quá hành chính.
+- Không mở bài dài, không lặp ý, không dùng văn phong giáo điều.
+- Không tự nhận là "trợ lý AI của Chương 5" hoặc nhắc đến nội dung Kinh tế chính trị Mác - Lênin.
+
+HAI LUỒNG TRẢ LỜI BẮT BUỘC:
+
+1. Nếu câu hỏi có dữ liệu trong giáo trình, slide, knowledge base hoặc kết quả vector store:
+- Trả lời bình thường, tự nhiên.
+- Bám sát nội dung tài liệu.
+- Có thể diễn giải dễ hiểu hơn nhưng không được làm sai ý trong giáo trình/slide.
+- Không cần mở đầu bằng "theo giáo trình" ở mọi câu.
+- Nếu có thể xác định nguồn, hãy ghi ngắn gọn ở cuối câu trả lời, ví dụ:
+  "Nguồn: Giáo trình/Session 10/Session 11/Session 12."
+
+2. Nếu câu hỏi không tìm thấy dữ liệu rõ ràng trong giáo trình, slide, knowledge base hoặc vector store:
+- Bắt buộc mở đầu bằng đúng câu:
+  "Hiện tại trong giáo trình không nhắc tới nội dung này, nhưng theo dữ liệu bên ngoài thì:"
+- Sau đó mới được trả lời bằng kiến thức tham khảo bên ngoài nếu câu hỏi phù hợp.
+- Nếu có nguồn bên ngoài đáng tin cậy trong dữ liệu được cung cấp, hãy đưa nguồn cho người dùng.
+- Nếu không có nguồn rõ ràng, phải nói:
+  "Phần này chỉ là thông tin tham khảo, chưa có nguồn đối chiếu trong giáo trình."
+- Tuyệt đối không được nói rằng giáo trình/slide có đề cập nếu không có căn cứ.
 
 Nguyên tắc trả lời:
 - Luôn trả lời bằng tiếng Việt.
-- Trả lời ngắn gọn, đi thẳng vào câu hỏi, không lan man.
-- Chỉ giải thích thêm, mở rộng, cho ví dụ hoặc liên hệ khi người dùng yêu cầu.
-- Không mở bài dài, không nhắc lại ý cũ nhiều lần.
+- Trả lời ngắn gọn, đúng trọng tâm, dễ dùng cho học tập và thuyết trình.
+- Với câu hỏi khái niệm: nêu ý chính trước, sau đó giải thích ngắn.
+- Với câu hỏi phân tích/thuyết trình: trình bày theo gạch đầu dòng rõ ràng.
+- Với câu hỏi so sánh: tách điểm giống, điểm khác, kết luận ngắn.
+- Nếu câu hỏi mơ hồ, hãy trả lời theo hướng gần nhất với Chương 3 hoặc hỏi lại nhẹ nhàng.
+- Không bịa rằng giáo trình, slide hoặc tài liệu đã nêu điều gì nếu không có căn cứ.
 
-Ưu tiên theo ngữ cảnh:
-- Nếu câu hỏi liên quan đến Kinh tế chính trị Mác - Lênin hoặc dữ liệu nền đã cung cấp, phải ưu tiên bám sát dữ liệu nền và dữ liệu truy xuất từ file search, dùng thuật ngữ tương đối chuẩn.
-- Nếu câu hỏi nằm ngoài dữ liệu nền nhưng vẫn liên quan môn học, vẫn có thể trả lời, nhưng phải nói rõ đó là phần mở rộng ngoài dữ liệu nền.
-- Nếu câu hỏi hoàn toàn ngoài phạm vi môn học, vẫn trả lời bình thường như một trợ lý AI hữu ích.
+Quy ước học thuật cần giữ:
+- Viết đúng tên môn: Tư tưởng Hồ Chí Minh.
+- Khi hỏi "Đại hội nào nêu cao tư tưởng Hồ Chí Minh", trả lời theo giáo trình là Đại hội đại biểu toàn quốc lần thứ VII của Đảng (năm 1991). Không nhầm với Đại hội XI/Cương lĩnh 2011, vốn liên quan đến việc nêu/diễn đạt khái niệm Tư tưởng Hồ Chí Minh trong Cương lĩnh bổ sung, phát triển.
+- Luôn viết rõ "độc lập dân tộc gắn liền với chủ nghĩa xã hội" khi bàn về mối quan hệ trung tâm của chương 3.
 
-Quy tắc rất quan trọng:
-- Không được bịa rằng dữ liệu nền hoặc tài liệu đã cung cấp có nói điều gì nếu không có căn cứ.
-- Nếu người dùng hỏi mốc thời gian, văn kiện, kỳ Đại hội, số liệu, hay chi tiết học thuật cụ thể mà dữ liệu nền và kết quả file search không nêu rõ, phải nói rõ:
-  "Trong dữ liệu hiện có, phần này chưa được nêu cụ thể."
-  Sau đó mới được trả lời phần mở rộng ngoài dữ liệu nền nếu bạn biết.
-- Khi trả lời phần ngoài dữ liệu nền, phải báo rõ bằng các cách tự nhiên như:
-  "xét ngoài dữ liệu nền...",
-  "theo tri thức phổ biến...",
-  "nếu mở rộng ngoài giáo trình..."
-- Không được trình bày phần mở rộng ngoài dữ liệu nền như thể đó là nội dung chắc chắn có sẵn trong giáo trình.
-
-Cách trả lời:
-- Với câu hỏi khái niệm: trả lời ngắn, đúng ý chính trước.
-- Với câu hỏi phân tích: chỉ nêu các ý cần thiết để trả lời đúng câu hỏi.
-- Với câu hỏi hỏi mốc cụ thể: ưu tiên xác nhận dữ liệu có nêu hay không trước, rồi mới trả lời.
-- Nếu câu hỏi có nguy cơ gây nhầm giữa nhiều mốc thời gian hoặc nhiều cách diễn đạt, hãy phân biệt thật rõ từng mốc, không gộp mơ hồ.
-
-Lưu ý:
-- Không tự kéo sang triết học hoặc chủ đề khác nếu người dùng không hỏi.
-- Không dùng lời văn quá khuôn mẫu, giáo điều hoặc quá dài.
-- Khi liên quan đến công thức, dùng đúng ký hiệu:
-  - H - T - H
-  - T - H - T'
-- Phân biệt rõ:
-  - kinh tế thị trường nói chung
-  - kinh tế thị trường định hướng xã hội chủ nghĩa ở Việt Nam
-
-Dữ liệu nền ưu tiên:
-${chapter5Knowledge}`;
+Dữ liệu nền từ slide Chương 3:
+${chapter3Knowledge}`;
 
 function sleep(ms: number) {
   return new Promise((resolve) => setTimeout(resolve, ms));
@@ -139,6 +148,25 @@ function normalizeHistory(history: ChatHistoryItem[]) {
     .join("\n");
 }
 
+function buildTools() {
+  const vectorStoreIds = [
+    chapter3VectorStoreId,
+    textbookVectorStoreId,
+    legacyVectorStoreId,
+  ].filter(Boolean);
+
+  const uniqueVectorStoreIds = [...new Set(vectorStoreIds)];
+  if (uniqueVectorStoreIds.length === 0) return [];
+
+  return [
+    {
+      type: "file_search" as const,
+      vector_store_ids: uniqueVectorStoreIds,
+      max_num_results: Number.isFinite(fileSearchMaxResults) ? fileSearchMaxResults : 6,
+    },
+  ];
+}
+
 export const getChatResponse = async (
   message: string,
   history: ChatHistoryItem[]
@@ -147,14 +175,25 @@ export const getChatResponse = async (
     return "Chưa cấu hình VITE_LLM_API_KEY trong file .env.local nên chatbot AI chưa hoạt động.";
   }
 
-  if (!vectorStoreId) {
-    return "Chưa cấu hình VITE_VECTOR_STORE_ID trong file .env.local nên chatbot chưa đọc được giáo trình.";
-  }
-
   const historyText = normalizeHistory(history);
+  const configuredStores = [
+    chapter3VectorStoreId ? `chapter 3: ${chapter3VectorStoreId}` : "",
+    textbookVectorStoreId ? `giáo trình: ${textbookVectorStoreId}` : "",
+    legacyVectorStoreId ? `legacy: ${legacyVectorStoreId}` : "",
+  ].filter(Boolean);
+
+  const retrievalStatus =
+    configuredStores.length > 0
+      ? `Vector store hiện tại: ${configuredStores.join(
+          "; "
+        )}. Khi dùng file_search, ưu tiên kết quả thuộc Chương 3 trước, sau đó mới dùng giáo trình rộng hơn.`
+      : "Chưa cấu hình vector store. Hãy trả lời dựa trên dữ liệu nền từ slide và nói rõ khi thiếu căn cứ giáo trình.";
 
   const input = `
 ${SYSTEM_INSTRUCTION}
+
+Trạng thái truy xuất tài liệu:
+${retrievalStatus}
 
 Lịch sử hội thoại:
 ${historyText || "(chưa có)"}
@@ -167,23 +206,20 @@ ${message}
 
   for (let attempt = 0; attempt < 3; attempt++) {
     try {
+      const tools = buildTools();
+
       const response = await ai.responses.create({
         model,
         input,
-        temperature: 0.2,
-        tools: [
-          {
-            type: "file_search",
-            vector_store_ids: [vectorStoreId],
-          },
-        ],
+        temperature: 0.35,
+        ...(tools.length > 0 ? { tools } : {}),
       });
 
       const text = response.output_text?.trim();
 
       if (text) return text;
 
-      return "Tôi chưa tạo được phản hồi từ AI. Hãy thử lại.";
+      return "Mình chưa tạo được phản hồi. Bạn thử hỏi lại ngắn gọn hơn nhé.";
     } catch (error) {
       lastError = error;
       const rawMessage = getErrorMessage(error);
@@ -195,7 +231,7 @@ ${message}
       }
 
       if (isNotFoundError(rawMessage)) {
-        return "Không tìm thấy model hoặc vector store hiện tại. Hãy kiểm tra lại VITE_LLM_MODEL và VITE_VECTOR_STORE_ID.";
+        return "Không tìm thấy model hoặc vector store hiện tại. Hãy kiểm tra lại VITE_LLM_MODEL và các biến vector store trong file .env.local.";
       }
 
       if (isRateLimitError(rawMessage) || isServerBusyError(rawMessage)) {
@@ -206,14 +242,14 @@ ${message}
         break;
       }
 
-      return "Xin lỗi, đã có lỗi xảy ra khi kết nối với trí tuệ nhân tạo.";
+      return "Xin lỗi, đã có lỗi xảy ra khi kết nối với mô hình AI.";
     }
   }
 
   const finalMessage = getErrorMessage(lastError);
 
   if (isRateLimitError(finalMessage) || isServerBusyError(finalMessage)) {
-    return "Hệ thống AI đang quá tải tạm thời. Bạn thử lại sau vài giây.";
+    return "Hệ thống AI đang quá tải tạm thời. Bạn thử lại sau vài giây nhé.";
   }
 
   if (isApiKeyError(finalMessage)) {
@@ -221,10 +257,10 @@ ${message}
   }
 
   if (isNotFoundError(finalMessage)) {
-    return "Không tìm thấy model hoặc vector store hiện tại. Hãy kiểm tra lại VITE_LLM_MODEL và VITE_VECTOR_STORE_ID.";
+    return "Không tìm thấy model hoặc vector store hiện tại. Hãy kiểm tra lại VITE_LLM_MODEL và các biến vector store trong file .env.local.";
   }
 
-  return "Xin lỗi, đã có lỗi xảy ra khi kết nối với trí tuệ nhân tạo.";
+  return "Xin lỗi, đã có lỗi xảy ra khi kết nối với mô hình AI.";
 };
 
 export const generateImage = async (_prompt: string): Promise<string | null> => {

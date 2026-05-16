@@ -167,7 +167,7 @@ export default function App() {
   const [messages, setMessages] = useState<Message[]>([
     {
       role: "model",
-      text: "Xin chào! Tôi là trợ lý AI của Chương 5. Tôi có thể hỗ trợ bạn về khái niệm, tính tất yếu khách quan và đặc trưng của kinh tế thị trường định hướng xã hội chủ nghĩa ở Việt Nam.",
+      text: "Xin chào! ChatBot tư tưởng Hồ Chí Minh đây, hỏi gì thì hỏi đi. Nhanh nhảu!",
     },
   ]);
   const [inputValue, setInputValue] = useState("");
@@ -227,7 +227,7 @@ export default function App() {
   const getDefaultWelcomeMessage = (): Message[] => [
     {
       role: "model",
-      text: "Xin chào! Tôi là trợ lý AI của Chương 5. Hãy hỏi tôi về khái niệm, tính tất yếu khách quan và đặc trưng của kinh tế thị trường định hướng xã hội chủ nghĩa ở Việt Nam.",
+      text: "Xin chào! Chatbot tư tưởng Hồ Chí Minh đây, hỏi gì thì hỏi đi. Nhanh nhảu!",
     },
   ];
 
