@@ -11,6 +11,7 @@ title: "Khái niệm, đối tượng, phương pháp nghiên cứu và ý nghĩ
 # Chương 1
 
 # Khái niệm, đối tượng, phương pháp nghiên cứu và ý nghĩa học tập môn Tư tưởng Hồ Chí Minh
+
 KHÁI NIỆM, ĐỐI TƯỢNG, PHƯƠNG PHÁP
 NGHIÊN CỨU VÀ Ý NGHĨA HỌC TẬP
 MÔN TƯ TƯỞNG HỒ CHÍ MINH
@@ -18,13 +19,18 @@ MÔN TƯ TƯỞNG HỒ CHÍ MINH
 A. MỤC TIÊU
 
 ### 1. Về kiến thức: Góp phần trang bị cho sinh viên
+
 những kiến thức cơ bản về một số vấn đề chung (nhập
 môn) của môn học Tư tưởng Hồ Chí Minh.
+
 ### 2. Về kỹ năng: Qua nghiên cứu môn học Tư tưởng
+
 Hồ Chí Minh, sinh viên bước đầu có được tư duy và kỹ
 năng đúng đắn, phù hợp khi phân tích cả về mặt lý luận
 và thực tiễn các vấn đề đặt ra trong cuộc sống.
+
 ### 3. Về tư tưởng: Giúp cho sinh viên thấy rõ hơn vai
+
 trò của Hồ Chí Minh đối với sự phát triển của dân tộc
 Việt Nam, thêm tin tưởng vào chế độ chính trị xã hội
 chủ nghĩa, tin tưởng vào sự lãnh đạo của Đảng Cộng sản
@@ -35,6 +41,7 @@ của cách mạng.
 B. NỘI DUNG
 
 ## I. KHÁI NIỆM TƯ TƯỞNG HỒ CHÍ MINH
+
 Đại hội đại biểu toàn quốc lần thứ XI của Đảng Cộng
 sản Việt Nam (năm 2011) nêu khái niệm “Tư tưởng Hỗ
 Chí Minh” như sau:
@@ -148,8 +155,7 @@ trong đó nhấn manh:-“Đảng ta phải nắm vững bản chất
 cách mạng và khoa học của chủ nghĩa Mác - Lênin, kế
 thừa đi sản quý báu về tư tưởng và lý luận cách mạng của
 Chủ tịch Hồ Chí Minh”.
-Đại hội đại biểu toàn quốc lần thứ VII của Đảng (năm
-1991) là một mốc lớn khi nêu cao tư tưởng Hồ Chí Minh.
+Đại hội đại biểu toàn quốc lần thứ VII của Đảng (năm 1991) là một mốc lớn khi nêu cao tư tưởng Hồ Chí Minh.
 Thực tế sự nghiệp cách mạng Việt Nam nói chung và của
 những năm đổi mới nói riêng đã chứng tổ rằng, không
 những chủ nghĩa Mác - Lênin, mà tư tưởng Hồ Chí Minh đã
@@ -270,6 +276,7 @@ là những vấn để lý luận và thực tiễn được
 mã
 
 ### 1. Xem GS.TS. Mạch Quang Thắng, PGS.TS. Bùi Đình Phong,
+
 TS. Chu Đức Tính (Đông chủ biên): UNESCO với sự kiện tôn vinh
 Chủ tịch Hồ Chí Minh - Anh hùng giải phóng dân tộc, Nhà văn hóa
 kiệt xuất, Nxb. Chính trị quốc gia, Hà Nội, 2018, tr.71-72,
@@ -291,6 +298,7 @@ thống quan điểm đó trong những điều kiện mới,
 IH- PHƯƠNG PHÁP NGHIÊN CỨU
 
 ### 1. Cơ sở phương pháp luận của việc nghiên cứu
+
 tư tưởng Hồ Chí Minh
 Phương pháp luận Hồ Chí Minh lấy phương pháp luận
 chủ nghĩa duy vật biện chứng và chủ nghĩa duy vật lịch sử
@@ -305,7 +313,9 @@ tư tưởng Hồ Chí Minh phải phù hợp với phương pháp luận
 của chính Hồ Chí Minh và của chủ nghĩa Mác - Lênin.
 Một số nguyên tắc và quan điểm phương pháp luận trong
 nghiên cứu tư tưởng Hồ Chí Minh:
+
 #### a) Thống nhất tính đẳng và tinh khoa hoc
+
 Nghiên cứu tư tưởng Hồ Chí Minh phải đứng trên
 lập trường giai cấp công nhân và đứng trên quan điểm
 của chủ nghĩa Mác - Lênin, quấn triệt Cương lĩnh,
@@ -318,7 +328,9 @@ trong phương pháp luận nghiên cứu tư tưởng Hồ Chí Minh.
 Chỉ trên cơ sở thống nhất tính đẳng và tính khoa học,
 người nghiên cứu mới biểu rõ và hiểu sâu sắc tư tưởng
 Hồ Chí Minh.
+
 #### b) Thống nhất lý luận và thực tiễn
+
 Hồ Chí Minh vừa coi trọng lý luận, vừa coi trọng thực
 tiễn, vì thực tiễn khái quát nên lý luận và chính lý luận
 lại chỉ đạo thực tiễn. Về lý luận, Người cho rằng: “Lý luận
@@ -356,8 +368,7 @@ lờ ana
 có lý luận; chỉ khi muốn nghiên cứu thật sâu với tư cách là
 một yếu tố chuyên biệt thì mới có thể tách riêng ra, nhưng
 việc tách ra cũng chỉ là tạm thời, còn về bản chất của nội
-dung phương pháp luận này là sự thống nhất biện chứng.
-6) Quan điểm lịch sử - cụ thể
+dung phương pháp luận này là sự thống nhất biện chứng. 6) Quan điểm lịch sử - cụ thể
 Cùng với chủ nghĩa duy vật biện chứng, cần vận dụng
 chủ nghĩa duy vật lịch sử vào việc nghiên cứu tư tưởng Hồ
 Chi Minh. Trong vấn đề phương pháp luận này, cần vận
@@ -371,7 +382,9 @@ quan điểm này, người nghiên cứu tư tưởng Hồ Chí Minh
 sẽ nhận thức được bản chất tư tưởng đó mang đậm dấu ấn
 của quá trình phát triển lịch sử, quá trình phát triển sáng
 tạo, đổi mới.
+
 #### d) Quan điểm toàn diện và hệ thống
+
 Tư tưởng Hồ Chí Minh là một hệ thống quan điểm toàn
 điện và sâu sắc về những vấn để cơ bản của cách mạng
 Việt Nam. Khi nghiên cứu tu tưởng Hồ Chí Minh trên
@@ -426,10 +439,10 @@ những cái tiên tiến, tiến bộ.
 ### 9. Một số phương pháp cụ thể
 
 - Phương pháp légic, phương pháp lịch sử và sự kết
-hợp phương pháp logic với phương pháp lịch sử.
-Phương pháp lôgíc nghiên cứu một cách tổng quất
-nhằm tìm ra được bản chất vốn có của sự vật, hiện tượng
-A
+  hợp phương pháp logic với phương pháp lịch sử.
+  Phương pháp lôgíc nghiên cứu một cách tổng quất
+  nhằm tìm ra được bản chất vốn có của sự vật, hiện tượng
+  A
 
 và khái quất thành lý luận. Các sự kiện, sự vật và hiện
 
@@ -459,6 +472,7 @@ Hồ Chí Minh. Có nhiều nội dung phan ánh tư tưởng Hỗ
 Chí Minh không ở trong văn bản mà là ở trong chỉ đạo
 
 ### 1. Cho đến nay, về co bản những văn ban đó được tập hợp trong
+
 bộ sách Hồ Chí Minh: Toàn tập (15 tập), Sđd; và còn nhiều văn bản
 của Hồ Chí Minh và về Hồ Chí Minh còn lưu trữ ở nhiều nơi, cả
 trong và ngoài nước, đang tiếp tục được sưu tầm, nghiên cứu.
@@ -546,6 +560,7 @@ của Hồ Chí Minh: “Toàn Đảng toàn dan ta đoàn kết phấn
 sự nghiệp cách mạng thế giới.
 
 ### 2. Giáo dục và định hướng thực hành đạo đức cách
+
 mang, củng cố niềm tin khoa học gắn liên với trau đổi
 tình cảm cách mạng, bôi dưỡng lòng yêu nước
 Qua nghiên cứu môn học Tư tưởng Hồ Chí Minh,
@@ -572,6 +587,7 @@ góp thiết thực và hiệu quả cho sự nghiệp cách mạng mà
 Hồ Chí Minh và nhân dân Việt Nam đã lựa chon.
 
 ### 3. Xây dựng, rèn luyện phương pháp và phong
+
 cách công tác
 
 Qua nghiên cứu môn học Tư tưởng Hồ Chí Minh,
@@ -594,8 +610,12 @@ mỗi người Việt Nam yêu nước.
 c. CÂU HOI ÔN TAP
 
 ### 1. Qua nhận thức nội hàm khái niệm Tư tưởng Hồ Chí
+
 Minh, hay đưa ra nhận xét về quá trình nhận thức của
 Đảng Cộng sản Việt Nam về tư tưởng Hồ Chí Minh?
+
 ### 2. Phân tích tầm quan trọng của việc sử dụng các
+
 phương pháp nghiên cứu môn học Tư tưởng Hồ Chí Minh?
+
 ### 3. Phân tích giá trị, ý nghĩa Tư tưởng Hồ Chí Minh?

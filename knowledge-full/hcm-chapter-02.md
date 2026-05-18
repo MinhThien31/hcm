@@ -18,16 +18,21 @@ VÀ PHÁT TRIEN TƯ TƯỞNG HỒ CHÍ MINH
 A. MỤC TIỂU
 
 ### 1. Về kiến thức: Giúp cho sinh viên hiểu rõ cơ số thực
+
 tiễn, cơ sở lý luận và nhân tố chủ quan hình thành tư
 tưởng Hồ Chí Minh; hiểu rõ các giai đoạn cơ bản trong quá
 trình hình thành và phát triển tư tưởng Hồ Chí Minh.
+
 ### 2. Về kỹ năng: Giúp cho sinh viên tiếp cận với
+
 phương pháp khoa học nhận thức khái quát nội dung, giá
 trị của tư tưởng Hồ Chí Minh từ việc nghiên cứu các cđ sở
 phong phú hình thành nên tư tưởng Hồ Chí Minh và quá
 trình hình thành tư tưởng Hồ Chí Minh trong hoạt động
 lý luận và thực tiễn của Người.
+
 ### 3. Về tư tưởng: Giúp cho sinh viên nhận thức khoa
+
 học giá trị tư tưởng Hồ Chí Minh đối với cách mạng Việt
 Nam, từ đó có tư tưởng, tình cảm tích cực trong việc học
 tập và làm theo tư tưởng, đạo đức, phong cách Hỗ Chí
@@ -39,6 +44,7 @@ B. NỘI DUNG
 ### 1. Cơ sở thực tiến
 
 #### a) Thực tiễn Việt Nam cuối thếkỷ XIN - đâu thế
+
 kỷ XX
 Từ năm 1858, thực dân Pháp bắt đầu tiến hành xâm
 lược Việt Nam. Triều đình nhà Nguyễn lần lượt ký kết các
@@ -83,6 +89,7 @@ trào Đông Du do Phan Bội Châu khởi xướng (1905 - 1909)
 Phong trào Duy Tân do Phan Châu Trình phát động
 
 ### 1. Thuật ngữ “thuộc địa và phong kiến” là thuật ngữ Hồ Chí
+
 Minh nêu trong tác phẩm Thường thức chính trị, xem Hồ Chí Minh:
 Toàn tập, Sđd, t.8, txr.25A.
 (1906 - 1908); Phong trào Đông Kinh nghĩa thục do Lương
@@ -129,7 +136,9 @@ Pháp thắng lợi; lãnh đạo đất nước vừa xây dựng chủ
 nghĩa xã hội, vừa kháng chiến chống Mỹ, cứu nước là
 nhân tố góp phần bổ sung, phát triển tư tưởng Hồ Chí
 Minh trên tất cả các phương điện.
+
 #### b) Thực tiễn thế giới cuối thếkỷ XIX - đầu thế
+
 kỷ XX
 Vào cuối thế kỷ XIX - đầu thế kỷ XX, chủ nghĩa tư
 bản trên thế giới đã phát triển từ giai đoạn tự do cạnh
@@ -176,7 +185,9 @@ Minh trên hành trình đi ra thế giới tìm mục tiêu và con
 đường cứu nước.
 
 ### 9. Cơ sở lý luận
+
 #### a) Giá trị truyền thống tốt đẹp của dân tộc Việt Nam
+
 Chủ nghĩa yêu nước là giá trị xuyên suốt trong những
 truyền thống tốt đẹp của dân tộc Việt Nam. Đó là động
 lực, sức mạnh giúp cho dân tộc Việt Nam tổn tại và vượt
@@ -224,20 +235,22 @@ cốt cách văn hóa dân tộc, đồng thời tiếp thu tinh hoa văn
 hóa nhân loại, xây dựng nền văn hóa mới của Việt Nam.
 Hồ Chí Minh chính là một biểu tượng cao đẹp của sự tích
 hợp tinh hoa văn hóa phương Đông và phương Tây.
+
 #### b) Tinh hoa văn héa nhân loại
+
 - Tinh hoa văn hóa phương Đông
-Tỉnh hoa văn hóa, tư tưởng phương Đông kết tỉnh
-trong ba học thuyết lớn Nho giáo, Phật giáo, Lão giáo. Đó
-là những học thuyết có ảnh hudng sâu rộng ở phương
-Đông và ở Việt Nam trước đây.
-Về Nho giáo, Hồ Chí Minh phân tích: “Tuy Khổng Tử
-là phong kiến và tuy trong học thuyết của Khổng Tổ có
-nhiều điều không đúng song những điều hay trong đó thì
-chúng ta nên học. “Chỉ có những người cách mạng chân
-chính mới thu thái được những điều hiểu biết quý báu của
-các đời trước để lại”. Lênin day chúng ta như vậy”,
-Hồ Chí Minh chú ý kế thừa và đổi mới tư tưởng dùng
-nhân trị, đức trị để quản lý xã hội. Kế thừa và phát triển
+  Tỉnh hoa văn hóa, tư tưởng phương Đông kết tỉnh
+  trong ba học thuyết lớn Nho giáo, Phật giáo, Lão giáo. Đó
+  là những học thuyết có ảnh hudng sâu rộng ở phương
+  Đông và ở Việt Nam trước đây.
+  Về Nho giáo, Hồ Chí Minh phân tích: “Tuy Khổng Tử
+  là phong kiến và tuy trong học thuyết của Khổng Tổ có
+  nhiều điều không đúng song những điều hay trong đó thì
+  chúng ta nên học. “Chỉ có những người cách mạng chân
+  chính mới thu thái được những điều hiểu biết quý báu của
+  các đời trước để lại”. Lênin day chúng ta như vậy”,
+  Hồ Chí Minh chú ý kế thừa và đổi mới tư tưởng dùng
+  nhân trị, đức trị để quản lý xã hội. Kế thừa và phát triển
 
 commas
 emery
@@ -292,7 +305,7 @@ Quốc như chủ nghĩa Gangdi, chủ nghĩa Tam dan của Tôn i
 Sơn. Hồ Chí Minh đã phát triển sáng tạo các i
 Trung {
 
-—_Ï
+—\_Ï
 
 quan điểm về dân tộc, dan quyén, dan sinh của Tôn Trung
 Sơn trong cách mạng dân chủ tư san thành tư tưởng đấu
@@ -302,33 +315,36 @@ nhà macxit sáng tạo, Hồ Chí Minh đã kế thừa và phát
 triển những tỉnh hoa trong tư tưởng, văn hóa phương
 Đông để giải quyết những vấn đề thực tiễn của cách mạng
 Việt Nam thời hiện đại.
+
 - Tinh hoa văn hóa phương Tây
-Ngay từ khi còn học ở Trường Tiểu học Pháp - bản xứ
-ở thành phế Vinh (năm 1905), Hồ Chí Minh đã quan tâm
-tối khẩu hiệu nổi tiếng của Đại Cách mạng Pháp năm
-1789: Tự do ~ Binh đẳng - Bac ái. Đi sang phương Tây,
-Người quan tâm tìm hiểu những khẩu hiệu nổi tiếng đó
-trong các cuộc cách mạng tư sản ở Anh, Pháp, Mỹ. Người
-đã kế thừa, phát triển những quan điểm nhân quyền, dan
-quyền trong bản Tuyên ngôn độc lập năm 1776 của Mỹ,
-bản Tuyên ngôn nhân quyền và đân quyền năm 1791 của
-Pháp và dé xuất quan điểm về quyền mưu cầu độc lập, tự
-do, hạnh phúc của các dân tộc.
-Trong hành trình đi tìm đường cứu nước, cứu dan, Hé
-Chí Minh đã sống, hoạt động thực tiễn, nghiên cứu lý
-luận, tình hình chính trị, kinh tế, văn hóa nhân loại tại
-những trung tâm chính trị, kinh tế, văn hóa lớn ở các cường
-quốc trên thế giới như Mỹ, Anh, Pháp, Nga, Trung Quốc, v.v.
-bằng chính ngôn ngữ của các nước đó. Người trực tiếp
-nghiên cứu tư tưởng nhân văn, dân chủ và nhà nước pháp
-quyền của các nhà khai sáng phương Tây như Vonte,
-Rútxô, Môngtétxkid, tìm hiểu chủ nghĩa Tam dân của Tôn
-Trung Son, v.v.; thích đọc sách văn học của William
-Shakespeare bằng tiếng Anh, Lỗ Tấn bằng tiếng Trung
-Hoa, Hugo, Zola bằng tiếng Pháp; hai nhà văn Anatole
-France va Léon Tolstoi “có thể nói là những người dé đầu
-văn học”? cho Hồ Chí Minh.
+  Ngay từ khi còn học ở Trường Tiểu học Pháp - bản xứ
+  ở thành phế Vinh (năm 1905), Hồ Chí Minh đã quan tâm
+  tối khẩu hiệu nổi tiếng của Đại Cách mạng Pháp năm
+  1789: Tự do ~ Binh đẳng - Bac ái. Đi sang phương Tây,
+  Người quan tâm tìm hiểu những khẩu hiệu nổi tiếng đó
+  trong các cuộc cách mạng tư sản ở Anh, Pháp, Mỹ. Người
+  đã kế thừa, phát triển những quan điểm nhân quyền, dan
+  quyền trong bản Tuyên ngôn độc lập năm 1776 của Mỹ,
+  bản Tuyên ngôn nhân quyền và đân quyền năm 1791 của
+  Pháp và dé xuất quan điểm về quyền mưu cầu độc lập, tự
+  do, hạnh phúc của các dân tộc.
+  Trong hành trình đi tìm đường cứu nước, cứu dan, Hé
+  Chí Minh đã sống, hoạt động thực tiễn, nghiên cứu lý
+  luận, tình hình chính trị, kinh tế, văn hóa nhân loại tại
+  những trung tâm chính trị, kinh tế, văn hóa lớn ở các cường
+  quốc trên thế giới như Mỹ, Anh, Pháp, Nga, Trung Quốc, v.v.
+  bằng chính ngôn ngữ của các nước đó. Người trực tiếp
+  nghiên cứu tư tưởng nhân văn, dân chủ và nhà nước pháp
+  quyền của các nhà khai sáng phương Tây như Vonte,
+  Rútxô, Môngtétxkid, tìm hiểu chủ nghĩa Tam dân của Tôn
+  Trung Son, v.v.; thích đọc sách văn học của William
+  Shakespeare bằng tiếng Anh, Lỗ Tấn bằng tiếng Trung
+  Hoa, Hugo, Zola bằng tiếng Pháp; hai nhà văn Anatole
+  France va Léon Tolstoi “có thể nói là những người dé đầu
+  văn học”? cho Hồ Chí Minh.
+
 #### c) Chủ nghĩa Mác - Lênin
+
 Cách mạng Tháng Mười Nga năm 1917 và thời đại
 mới cũng như chủ nghĩa Mác - Lênin là cơ sở lý luận quyết
 định bước phát triển mới về chất trong tư tưởng Hồ Chí
@@ -390,6 +406,7 @@ nghĩa xã hội ở Việt Nam; các vấn đề xây dựng Đảng,
 Nhà nước, văn hóa, con người, đạo đức, v.v. Hồ Chí Minh
 
 ### 1. Trương Niệm Thức: Hồ Chí Minh truyện, Nxb. Tam Liên,
+
 Thượng Hải, tháng 6/1949 (bản tiếng Trung), bản dịch tiếng Việt
 —
 
@@ -399,7 +416,9 @@ nghĩa Mác - Lênin. Tư tưởng Hồ Chí Minh là một bước
 nhảy vọt trong lịch sử tư hưởng Việt Nam.
 
 ### 8. Nhân tố chủ quan Hồ Chí Minh
+
 #### a) Phẩm chất Hồ Chí Minh
+
 Hồ Chí Minh có lý tưởng cao cả và hoài bão lớn cứu
 dân, cứu nước thoát khỏi cảnh lầm than, co cực để theo
 kịp các nước tiên tiến trên thế giới. Người có ý chí, ngh
@@ -432,7 +451,9 @@ mạng thế giới. Những phẩm chất cá nhân đó là một nhân
 tố quyết định những thành công của Hồ Chí Minh trong
 hoạt động lý luận và thực tiễn cho dân tộc Việt Nam và
 nhân loại.
+
 #### b) Tài năng hoạt động, tổng kết thực tiễn phát triển
+
 lý luận
 Hồ Chí Minh là người có vốn sống và thực tiễn cách
 mạng phong phú, phi thường. Trước khi trở thành Chủ tịch
@@ -472,6 +493,7 @@ TI- QUÁ TRÌNH HÌNH THÀNH VÀ PHÁT TRIỂN
 TƯ TƯỞNG HỒ CHÍ MINH
 
 ### 1. Thời kỳ trước năm 1911: Hình thành tư tưởng
+
 yêu nước và chí hướng tìm đường cứu nước mới
 
 Trong thời kỳ này, Hồ Chí Minh tiếp thu truyền thống
@@ -492,10 +514,14 @@ cách nhà quan làm phong cách nhà ta”. Tinh thần yêu
 nước, thương dân và nhân cách của cụ Nguyễn Sinh Bắc có
 
 }
+
 ### 1. Ban Nghiên cứu Lịch sử Đảng Trung ương: Chủ tịch Hồ Chí i
+
 Minh - Tiểu sử sự nghiệp, Nxb. Sự thật, Hà Nội, 1980, tr.12.
 i}
+
 ### 2. Học viện Chính trị quốc gia Hỗ Chi Minh - Song Thành
+
 (Chủ biên): Hồ Chí Minh - Tiểu sử, Nxb. Lý luận chính trị, Hà Nội,
 2006, tr.24-25.
 ceetane
@@ -532,6 +558,7 @@ cách mạng trên thế giới. Ngày 5/6/1911, Hồ Chí Minh đi ra
 nưốc ngoài tim con đường cứu nước, cứu dân.
 
 ### 3. Thời kỳ 1911 - 1920: Hình thành tư tưởng cứu
+
 nước, giải phóng dân tộc Việt Nam theo con đường
 cách mạng vô sản
 Tư tưởng Hồ Chí Minh về cách mạng giải phóng dân
@@ -584,6 +611,7 @@ trong cuộc đời của Hồ Chí Minh, bước ngoặt chủ nghĩa yêu
 nước kết hợp chặt chế với lập trường cách mạng vô sản,
 
 ### 8. Thời ky 1920 - 1930: Hình thành những nội
+
 dung cơ bản tư tưởng về cách mạng Việt Nam
 Đây là thời kỳ mục tiêu, phương hướng cách mạng giải
 phóng dân tộc Việt Nam từng bước được cụ thể hóa, thể
@@ -670,6 +698,7 @@ cuộc khủng hoang về đường lối cứu nước và tổ chức lãnh
 sang đầu năm 1980.
 
 ### 4. Thời kỳ 1980 - 1941: Vượt qua thử thách, giữ
+
 vững đường lối, phương pháp cách mạng Việt Nam
 đúng đắn, sáng tạo
 Những thử thách lớn với Hồ Chí Minh xuất hiện
@@ -769,6 +798,7 @@ tổ chức nhân đân biến thành các phong trào cách mạng để
 dẫn tới thắng lợi của Cách mạng Tháng Tám năm 1945.
 
 ### 5. Thời ky 1941 - 1969: Tư tưởng Hồ Chí Minh tiếp
+
 tục phát triển, soi đường cho sự nghiệp cách mạng
 của Đảng và nhân đân ta
 Trong thời kỳ này, tư tưởng Hồ Chí Minh và đường lối
@@ -846,7 +876,7 @@ nghĩa xã hội.
 Trong những giờ phút gay go nhất của cuộc kháng
 chiến chống Mỹ, cứu nước, khi đế quốc Mỹ tăng cường
 
-_meraege
+\_meraege
 quân đội viễn chỉnh vào miền Nam và đẩy mạnh đánh phá
 
 HÀ
@@ -871,7 +901,7 @@ Việt Nam vận dụng và phát triển trong thực tiễn cách
 mạng Việt Nam. Đảng Cộng sản Việt Nam đã tiếp tục
 lãnh đạo miền Bắc xây dựng chủ nghĩa xã hội, miền Nam
 tiếp tục thực hiện cuộc cách mạng dân tộc dân chủ nhân
-_dân đi đến thắng lợi hoàn toàn. Từ năm 1975, cả nước
+\_dân đi đến thắng lợi hoàn toàn. Từ năm 1975, cả nước
 hòa bình, độc lập, thống nhất đi lên chủ nghĩa xã hội.
 
 Ngày nay, Đảng Cộng sản Việt Nam đang đưa sự nghiệp
@@ -880,7 +910,9 @@ Ngày nay, Đảng Cộng sản Việt Nam đang đưa sự nghiệp
 IH- GIÁ TRI TƯ TƯỞNG HỒ CHI MINH
 
 1, Đối với cách mạng Việt Nam
+
 #### a) Tư tưởng Hồ Chí Minh đưa cách mạng giải phóng
+
 dân tộc Việt Nam đến thang lợi và bat đầu xây dựng một
 xã hội mới trên đất nước ta
 Hồ Chí Minh tìm thấy con đường cứu nước, cứu dân,
@@ -917,7 +949,9 @@ với đoàn kết quốc tế, v.v.. Tư tưởng Hồ Chí Minh là một hệ
 thống mở đây sức sống được Đảng Cộng sản Việt Nam tiếp
 tục vận dụng sáng tạo, bổ sung, phát triển trong sự nghiệp
 đổi mới hiện nay và trong tương lai,
+
 #### b) Tư tưởng Hồ Chí Minh là nền tảng tư tưởng và kim
+
 chỉ nam cho cách mạng Việt Nam
 Lan đầu tiên trong lịch sử tư tưởng Việt Nam, tu
 tưởng định hướng, soi đường, chỉ đạo sự phát triển của
@@ -947,7 +981,9 @@ tới thắng lợi. Tư tưởng Hồ Chí Minh trường tồn, bất diét
 cùng với sự phát triển vững mạnh của dân tộc Việt Nam.
 
 ### 2. Đối với sự phát triển tiến bộ của nhân loại
+
 #### a) Tư tưởng Hồ Chí Minh góp phần mé ra cho các dân
+
 tộc thuộc địa con đường giải phóng dân tộc gắn với sự tiến
 bộ xã hội
 C. Mác cho rằng, “mỗi thời đại xã hội đều cần có những
@@ -985,7 +1021,9 @@ phóng dân tộc trong thời đại ngày nay. Tư tưởng Hồ Chí Minh
 về cách mạng giải phóng dân tộc được đặt trên cơ sở hiện
 thực của Việt Nam nhưng có ý nghĩa lớn đối với phong
 trào cách mạng giải phóng dân tộc trên thế giới.
+
 #### b) Tư tưởng Hồ Chí Minh góp phần tích cực vào cuộc
+
 đấu tranh vì độc lập dân tộc, dân chủ, hòa bình, hợp tác và
 phát triển trên thế giới
 Hồ Chí Minh là người Việt Nam đầu tiên khẳng định
@@ -1061,15 +1099,20 @@ quốc lần thứ XII, Sđd, tr.7-8.
 c. CÂU HOI ÔN TẬP
 
 ### 1. Phân tích cơ sở khách quan hình thành, phát triển
+
 tư tưởng Hồ Chí Minh; chi ra tién để lý luận giữ vai trò
 quyết định trong việc hình thành, phát triển tư tưởng Hồ
 Chí Minh?
+
 ### 9. Phân tích những bước tiến trong nhận thức, những
+
 dấu mốc cơ bản trong quá trình hình thành, phát triển tư
 tưởng Hồ Chí Minh. Tại sao đó là những bước tiến trong
 nhận thức, là những đấu mốc cơ bản trong quá trình hình
 thành, phát triển tư tưởng Hồ Chí Minh?
+
 ### 3. Hãy phân tích những phẩm chất cá nhân, mối
+
 quan hệ giữa hoạt động lý luận và hoạt động thực tiễn
 của Hồ Chí Minh trong quá trình hình thành và phát
 triển tư tưởng Hồ Chí Minh; ý nghĩa sự ra đời tư tưởng

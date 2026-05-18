@@ -61,7 +61,7 @@ import {
 import { getChatResponse } from "./lib/gemini";
 import { auth, googleProvider } from "./lib/firebase";
 import { signInWithPopup, signOut, onAuthStateChanged, User as FirebaseUser, createUserWithEmailAndPassword, signInWithEmailAndPassword, updateProfile, sendPasswordResetEmail } from "firebase/auth";
-import FlipBook from "./FlipBook";
+import UnityGame from "./UnityGame";
 import { Footer } from "./Footer"; // Sửa lại đường dẫn nếu bạn để ở thư mục khác, VD: "./components/Footer"
 // ==========================================
 // R3F IMPORTS CHO LIBRARY 3D
@@ -152,15 +152,15 @@ type SceneState = 'intro' | 'hub' | 'room1' | 'room2' | 'room3';
 const ARTIFACTS_ROOM1 = [
   {
     id: 'gear',
-    name: 'Bánh Răng Khởi Nguyên',
-    desc: 'Tính chất thời kỳ quá độ lên CNXH được Chủ tịch Hồ Chí Minh đánh giá là một cuộc biến đổi sâu sắc, vĩ đại nhưng cũng vô cùng khó khăn, phức tạp và lâu dài.\n\nĐó là cuộc đấu tranh giằng co quyết liệt giữa cái cũ đang suy tàn và cái mới đang nảy sinh trên mọi lĩnh vực của đời sống.\n\nNgười căn dặn: Xây dựng CNXH là một cuộc chiến đấu khổng lồ, "khó hơn đánh giặc". Bởi lẽ, đánh giặc là tiêu diệt kẻ thù hữu hình, còn xây dựng nền kinh tế - xã hội mới là đánh thắng kẻ thù vô hình (sự nghèo nàn, lạc hậu, tàn dư xã hội cũ), đòi hỏi sự kiên nhẫn, bền bỉ và sáng tạo không ngừng.',
+    name: 'Chiến Lược Đoàn Kết',
+    desc: 'Đại đoàn kết toàn dân tộc là vấn đề có ý nghĩa chiến lược, quyết định thành công của cách mạng.\n\nHồ Chí Minh chỉ rõ: "Sử dạy cho ta bài học này: Lúc nào dân ta đoàn kết muôn người như một thì nước ta độc lập, tự do. Trái lại lúc nào dân ta không đoàn kết thì bị nước ngoài xâm lấn."\n\nĐại đoàn kết toàn dân tộc là chiến lược lâu dài, nhất quán, được duy trì cả trong cách mạng dân tộc dân chủ nhân dân và cách mạng xã hội chủ nghĩa.\n\n"Đoàn kết, đoàn kết, đại đoàn kết. Thành công, thành công, đại thành công."',
     position: [-2, 0, 0] as [number, number, number],
     color: '#D4AF37'
   },
   {
     id: 'blueprint',
-    name: 'Bản Đồ Nông Nghiệp',
-    desc: 'Đặc điểm lớn nhất của thời kỳ quá độ ở Việt Nam là: Từ một nước nông nghiệp lạc hậu tiến thẳng lên Chủ nghĩa Xã hội không phải kinh qua giai đoạn phát triển Tư bản chủ nghĩa.\n\nXuất phát điểm nền kinh tế thấp, hậu quả chiến tranh để lại nặng nề đòi hỏi chúng ta phải có những bước đi vững chắc, "xây đi đôi với chống", không được chủ quan, nôn nóng hay đốt cháy giai đoạn.',
+    name: 'Mục Tiêu Hàng Đầu',
+    desc: 'Đại đoàn kết toàn dân tộc không chỉ là khẩu hiệu chiến lược mà còn là mục tiêu lâu dài của cách mạng.\n\nĐảng là lực lượng lãnh đạo cách mạng Việt Nam nên tất yếu đại đoàn kết toàn dân tộc phải được xác định là nhiệm vụ hàng đầu của Đảng.\n\nHồ Chí Minh tuyên bố: "Mục đích của Đảng Lao động Việt Nam có thể gồm trong 8 chữ là: ĐOÀN KẾT TOÀN DÂN, PHỤNG SỰ TỔ QUỐC."\n\nCách mạng là sự nghiệp của quần chúng, do quần chúng và vì quần chúng.',
     position: [2, 0, 0] as [number, number, number],
     color: '#8B0000'
   }
@@ -169,33 +169,33 @@ const ARTIFACTS_ROOM1 = [
 const ARTIFACTS_ROOM2 = [
   {
     id: 'lotus',
-    name: 'Khối Pha Lê Mục Tiêu',
-    desc: 'Mục tiêu cao nhất của Chủ nghĩa Xã hội theo tư tưởng Hồ Chí Minh là nâng cao đời sống vật chất và tinh thần của nhân dân.\n\nNgười khẳng định: "Chủ nghĩa xã hội là làm sao cho nhân dân đủ ăn, đủ mặc, ngày càng sung sướng, ai nấy được đi học, ốm đau có thuốc uống, già không lao động được thì nghỉ, những phong tục tập quán không tốt dần dần được xóa bỏ".',
+    name: 'Nền Tảng Đoàn Kết',
+    desc: 'Hồ Chí Minh chỉ rõ: "Đại đoàn kết tức là trước hết phải đoàn kết đại đa số nhân dân, mà đại đa số nhân dân là công nhân, nông dân và các tầng lớp nhân dân lao động khác. Đó là nền gốc của đại đoàn kết."\n\nLực lượng làm nền tảng cho khối đại đoàn kết toàn dân tộc là công nhân, nông dân và trí thức.\n\nNền tảng này càng được củng cố vững chắc thì khối đại đoàn kết toàn dân tộc càng có thể mở rộng, không có thế lực nào có thể làm suy yếu.',
     position: [-2, 0, 0] as [number, number, number],
-    color: '#00FFFF' // Cyan/Neon Blue
+    color: '#00FFFF'
   },
   {
     id: 'pillar',
-    name: 'Trụ Cột Đại Đoàn Kết',
-    desc: 'Động lực quan trọng và quyết định nhất để xây dựng thành công Chủ nghĩa Xã hội chính là con người, là sức mạnh đại đoàn kết toàn dân tộc.\n\nHồ Chí Minh nhấn mạnh: "Dễ mười lần không dân cũng chịu, khó trăm lần dân liệu cũng xong". Phải kết hợp sức mạnh dân tộc với sức mạnh thời đại để tạo ra sức mạnh tổng hợp.',
+    name: 'Mặt Trận Thống Nhất',
+    desc: 'Khối đại đoàn kết toàn dân tộc chỉ trở thành lực lượng to lớn khi được tập hợp, tổ chức lại thành một khối vững chắc - đó là Mặt trận dân tộc thống nhất.\n\nMặt trận là nơi quy tụ mọi tổ chức và cá nhân yêu nước, hoạt động theo nguyên tắc hiệp thương dân chủ.\n\nNguyên tắc cốt lõi: Xây dựng trên nền tảng liên minh công nhân - nông dân - trí thức, đặt dưới sự lãnh đạo của Đảng.',
     position: [2, 0, 0] as [number, number, number],
-    color: '#FFD700' // Gold
+    color: '#FFD700'
   }
 ];
 const ARTIFACTS_ROOM3 = [
   {
     id: 'core_star',
-    name: 'Nhân Dân Làm Chủ',
-    desc: 'Đặc trưng cốt lõi: Chủ nghĩa xã hội là chế độ do nhân dân làm chủ.\n\nNhà nước phải phát huy quyền làm chủ của nhân dân, đảm bảo dân chủ trên tất cả các lĩnh vực của đời sống xã hội. Bao nhiêu lợi ích đều vì dân, bao nhiêu quyền hạn đều của dân.',
-    color: '#ff2222', // Đỏ rực
+    name: 'Sức Mạnh Dân Tộc',
+    desc: 'Sức mạnh dân tộc là sự tổng hợp của các yếu tố vật chất và tinh thần, trước hết là sức mạnh của chủ nghĩa yêu nước và ý thức tự lực, tự cường dân tộc.\n\nĐoàn kết quốc tế nhằm kết hợp sức mạnh dân tộc với sức mạnh thời đại, tạo sức mạnh tổng hợp cho cách mạng.\n\nHồ Chí Minh: "Tự lực cánh sinh, dựa vào sức mình là chính."',
+    color: '#ff2222',
     type: 'core',
-    position: [0, 0, 0] // Tọa độ giả lập để fallback
+    position: [0, 0, 0]
   },
   {
     id: 'orbiter_eco',
-    name: 'Kinh Tế Hiện Đại',
-    desc: 'Đặc trưng kinh tế: Có nền kinh tế phát triển cao dựa trên lực lượng sản xuất hiện đại và chế độ công hữu về các tư liệu sản xuất chủ yếu.\n\nSự phát triển kinh tế phải luôn đi đôi với việc nâng cao không ngừng đời sống vật chất và tinh thần của nhân dân.',
-    color: '#44aaff', // Xanh dương
+    name: 'Phong Trào Cộng Sản',
+    desc: 'Đoàn kết với phong trào cộng sản và công nhân quốc tế.\n\nHồ Chí Minh cho rằng sự đoàn kết giữa giai cấp công nhân quốc tế là sự bảo đảm vững chắc cho thắng lợi của chủ nghĩa cộng sản.\n\nTheo tinh thần "bốn phương vô sản đều là anh em", chỉ có sức mạnh đoàn kết mới chống lại được âm mưu của chủ nghĩa đế quốc thực dân.',
+    color: '#44aaff',
     type: 'orbiter',
     radius: 3.5,
     speed: 0.5,
@@ -204,9 +204,9 @@ const ARTIFACTS_ROOM3 = [
   },
   {
     id: 'orbiter_culture',
-    name: 'Văn Hóa Tiên Tiến',
-    desc: 'Đặc trưng văn hóa - xã hội: Có nền văn hóa tiên tiến, đậm đà bản sắc dân tộc.\n\nCon người được giải phóng khỏi áp bức, bóc lột, bất công, làm theo năng lực, hưởng theo lao động, có cuộc sống ấm no, tự do, hạnh phúc, có điều kiện phát triển toàn diện cá nhân.',
-    color: '#aa44ff', // Tím
+    name: 'Giải Phóng Dân Tộc',
+    desc: 'Đoàn kết với phong trào đấu tranh giải phóng dân tộc trên thế giới.\n\nHồ Chí Minh đã sớm đề nghị Quốc tế Cộng sản về những biện pháp nhằm làm cho các dân tộc thuộc địa hiểu biết nhau hơn và đoàn kết lại.\n\nNgười tham gia sáng lập Hội Liên hiệp thuộc địa tại Pháp và Hội Liên hiệp các dân tộc bị áp bức tại Trung Quốc.',
+    color: '#aa44ff',
     type: 'orbiter',
     radius: 3.5,
     speed: 0.5,
@@ -215,9 +215,9 @@ const ARTIFACTS_ROOM3 = [
   },
   {
     id: 'orbiter_world',
-    name: 'Hợp Tác Quốc Tế',
-    desc: 'Đặc trưng quan hệ quốc tế: Có quan hệ hữu nghị và hợp tác với nhân dân các nước trên thế giới.\n\nCách mạng Việt Nam luôn là một bộ phận của cách mạng thế giới, kết hợp sức mạnh dân tộc với sức mạnh thời đại.',
-    color: '#44ffaa', // Xanh lá
+    name: 'Hòa Bình Thế Giới',
+    desc: 'Đoàn kết với các lực lượng tiến bộ, những người yêu chuộng hòa bình, dân chủ, tự do và công lý trên toàn thế giới.\n\nHồ Chí Minh luôn giương cao ngọn cờ hòa bình, đấu tranh cho "một nền hòa bình chân chính xây trên công bình và lý tưởng dân chủ".\n\nChính sách đối ngoại: "Làm bạn với tất cả mọi nước dân chủ và không gây thù oán với một ai."',
+    color: '#44ffaa',
     type: 'orbiter',
     radius: 3.5,
     speed: 0.5,
@@ -489,10 +489,10 @@ const InteractiveLibrary = () => {
             transition={{ duration: 1.5, ease: "easeInOut" }}
           >
             <motion.p initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.5, duration: 2 }} className="text-gray-300 uppercase tracking-[0.5em] text-xs md:text-sm mb-6 font-medium">
-              Tri thức là ánh sáng của dân tộc
+              Đoàn kết là sức mạnh vô địch
             </motion.p>
             <motion.h1 initial={{ opacity: 0, scale: 0.9 }} animate={{ opacity: 1, scale: 1 }} transition={{ delay: 1.5, duration: 2 }} className="text-4xl md:text-6xl lg:text-7xl font-serif text-[#D4AF37] mb-12 text-center leading-tight drop-shadow-[0_0_30px_rgba(212,175,55,0.6)]">
-              Bảo Tàng Tri Thức<br />Chủ Nghĩa Xã Hội
+              Bảo Tàng Tri Thức<br />Đại Đoàn Kết Dân Tộc
             </motion.h1>
             <motion.button initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 3, duration: 1 }} whileHover={{ scale: 1.05, boxShadow: "0 0 30px rgba(139,0,0,0.8)" }} onClick={() => setScene('hub')} className="px-8 py-4 bg-gradient-to-r from-[#8B0000] to-red-950 border border-[#D4AF37]/50 uppercase tracking-widest text-sm font-bold flex items-center gap-3 backdrop-blur-md rounded-full text-white shadow-2xl">
               Bước vào không gian <ChevronRight className="w-5 h-5" />
@@ -650,7 +650,7 @@ export default function App() {
   const [profile, setProfile] = useState<UserProfile | null>(null);
   const [isChatOpen, setIsChatOpen] = useState(false);
   const [messages, setMessages] = useState<Message[]>([
-    { role: "model", text: "Xin chào! Tôi là trợ lý ảo chuyên về Hội nhập kinh tế quốc tế của Việt Nam. Bạn muốn tìm hiểu về nội dung nào hôm nay?" }
+    { role: "model", text: "Xin chào! Tôi là trợ lý ảo chuyên về Tư tưởng Hồ Chí Minh - Chương 5: Đại đoàn kết toàn dân tộc và đoàn kết quốc tế. Bạn muốn tìm hiểu về nội dung nào hôm nay?" }
   ]);
   const [inputValue, setInputValue] = useState("");
   const [isLoading, setIsLoading] = useState(false);
@@ -702,7 +702,7 @@ export default function App() {
   };
 
   const getDefaultWelcomeMessage = (): Message[] => ([
-    { role: "model", text: "Xin chào! Tôi là trợ lý ảo chuyên về Hội nhập kinh tế quốc tế của Việt Nam. Bạn muốn tìm hiểu về nội dung nào hôm nay?" }
+    { role: "model", text: "Xin chào! Tôi là trợ lý ảo chuyên về Tư tưởng Hồ Chí Minh - Chương 5: Đại đoàn kết toàn dân tộc và đoàn kết quốc tế. Bạn muốn tìm hiểu về nội dung nào hôm nay?" }
   ]);
 
   const loadLocalMessages = (uid: string): Message[] => {
@@ -956,8 +956,8 @@ export default function App() {
                 <>
                   <span className="text-gray-300 dark:text-white/20 mx-2">|</span>
                   <a href="#hero" className="text-sm font-medium text-gray-600 dark:text-gray-300 hover:text-[#8B0000] dark:hover:text-[#D4AF37] transition-colors uppercase tracking-wider">Khai mạc</a>
-                  <a href="#session10" className="text-sm font-medium text-gray-600 dark:text-gray-300 hover:text-[#8B0000] dark:hover:text-[#D4AF37] transition-colors uppercase tracking-wider">Phòng 10</a>
-                  <a href="#session11" className="text-sm font-medium text-gray-600 dark:text-gray-300 hover:text-[#8B0000] dark:hover:text-[#D4AF37] transition-colors uppercase tracking-wider">Phòng 11</a>
+                  <a href="#session10" className="text-sm font-medium text-gray-600 dark:text-gray-300 hover:text-[#8B0000] dark:hover:text-[#D4AF37] transition-colors uppercase tracking-wider">Phần I</a>
+                  <a href="#session11" className="text-sm font-medium text-gray-600 dark:text-gray-300 hover:text-[#8B0000] dark:hover:text-[#D4AF37] transition-colors uppercase tracking-wider">Phần II</a>
                   <a href="#flipbook" className="text-sm font-medium text-gray-600 dark:text-gray-300 hover:text-[#8B0000] dark:hover:text-[#D4AF37] transition-colors uppercase tracking-wider">Tư liệu</a>
                 </>
               )}
@@ -1060,7 +1060,7 @@ export default function App() {
                 <motion.div initial={{ opacity: 0, y: 40 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 1.2, ease: "easeOut" }} className="max-w-5xl mx-auto text-center">
                   <motion.div initial={{ scale: 0.8, opacity: 0 }} animate={{ scale: 1, opacity: 1 }} transition={{ delay: 0.3, duration: 1 }} className="mb-8">
                     <Badge variant="outline" className="px-6 py-2 border-[#8B0000]/50 dark:border-[#D4AF37]/50 text-[#8B0000] dark:text-[#D4AF37] bg-[#8B0000]/10 dark:bg-[#D4AF37]/10 font-medium tracking-[0.2em] uppercase text-sm backdrop-blur-md">
-                      Không gian triển lãm chuyên đề
+                      Chương 5 — Triển lãm chuyên đề
                     </Badge>
                   </motion.div>
 
@@ -1070,11 +1070,11 @@ export default function App() {
                       <span className="absolute -bottom-2 left-0 w-full h-[2px] bg-gradient-to-r from-transparent via-[#8B0000] dark:via-[#D4AF37] to-transparent"></span>
                     </span>
                     <br />
-                    <span className="text-4xl md:text-6xl text-gray-600 dark:text-gray-300 mt-4 block tracking-normal">Về Chủ Nghĩa Xã Hội</span>
+                    <span className="text-4xl md:text-6xl text-gray-600 dark:text-gray-300 mt-4 block tracking-normal">Về Đại Đoàn Kết Toàn Dân Tộc</span>
                   </h1>
 
                   <motion.p initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ delay: 1, duration: 1 }} className="text-xl md:text-3xl text-gray-600 dark:text-gray-400 font-light italic font-serif mb-12">
-                    “Độc lập dân tộc gắn liền với chủ nghĩa xã hội”
+                    “Đoàn kết, đoàn kết, đại đoàn kết — Thành công, thành công, đại thành công”
                   </motion.p>
 
                   <motion.div whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }} className="inline-block">
@@ -1089,14 +1089,14 @@ export default function App() {
             </section>
 
             {/* ==========================================
-                B. SESSION 10 
+                B. SESSION 10 (PHẦN I)
             ========================================== */}
             <section id="session10" className="py-32 relative z-10 border-t border-gray-200 dark:border-white/5">
               <div className="container mx-auto px-4 md:px-8 max-w-7xl">
                 <motion.div initial={{ opacity: 0, y: 30 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true, margin: "-100px" }} className="text-center mb-20">
-                  <span className="text-[#8B0000] dark:text-[#D4AF37] tracking-[0.3em] text-sm font-bold uppercase mb-4 block">Session 10</span>
+                  <span className="text-[#8B0000] dark:text-[#D4AF37] tracking-[0.3em] text-sm font-bold uppercase mb-4 block">Phần I</span>
                   <h2 className="text-4xl md:text-5xl font-serif font-bold text-gray-900 dark:text-white uppercase tracking-wide">
-                    Thời Kỳ Quá Độ Lên CNXH
+                    Đại Đoàn Kết Toàn Dân Tộc
                   </h2>
                   <div className="w-24 h-[2px] bg-gradient-to-r from-transparent via-[#8B0000] to-transparent mx-auto mt-6"></div>
                 </motion.div>
@@ -1104,47 +1104,47 @@ export default function App() {
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-8 lg:gap-12">
                   <ExhibitionCard
                     icon={<Shield className="w-8 h-8 text-[#8B0000] dark:text-[#D4AF37]" />}
-                    title="1. Tính chất thời kỳ quá độ"
+                    title="1. Ý nghĩa chiến lược"
                     delay={0.1}
                     items={[
-                      "Là một thời kỳ lịch sử vô cùng khó khăn.",
-                      "Diễn biến phức tạp, đan xen cũ - mới.",
-                      "Mang tính chất lâu dài và bền bỉ.",
-                      "Đòi hỏi sự hy sinh, gian khổ.",
-                      <span className="text-[#8B0000] dark:text-[#D4AF37] font-bold italic">“Khó hơn đánh giặc” - Hồ Chí Minh</span>
+                      "Là vấn đề mang tính sống còn của dân tộc Việt Nam.",
+                      "Quyết định thành công của cách mạng.",
+                      "Được duy trì cả trong cách mạng DTDCND và CNXH.",
+                      "Không bao giờ thay đổi chủ trương đại đoàn kết.",
+                      <span className="text-[#8B0000] dark:text-[#D4AF37] font-bold italic">“Lúc nào dân ta đoàn kết muôn người như một thì nước ta độc lập, tự do.” - Hồ Chí Minh</span>
                     ]}
                   />
                   <ExhibitionCard
                     icon={<Flag className="w-8 h-8 text-[#8B0000] dark:text-[#D4AF37]" />}
-                    title="2. Đặc điểm Việt Nam"
+                    title="2. Mục tiêu, nhiệm vụ hàng đầu"
                     delay={0.2}
                     items={[
-                      "Xuất phát từ một nước nông nghiệp lạc hậu.",
-                      "Tiến thẳng lên Chủ nghĩa Xã hội.",
-                      "Không qua tư bản chủ nghĩa.",
-                      "Đi lên từ xuất phát điểm kinh tế thấp, hậu quả chiến tranh."
+                      "Là mục tiêu lâu dài của cách mạng.",
+                      "Nhiệm vụ hàng đầu của Đảng, quán triệt trong mọi lĩnh vực.",
+                      "Chuyển nhu cầu tự phát của quần chúng thành sức mạnh tự giác.",
+                      "Đoàn kết toàn dân, phụng sự Tổ quốc."
                     ]}
                   />
                   <ExhibitionCard
                     icon={<Layers className="w-8 h-8 text-[#8B0000] dark:text-[#D4AF37]" />}
-                    title="3. Nhiệm vụ trên các lĩnh vực"
+                    title="3. Chủ thể & Nền tảng"
                     delay={0.3}
                     items={[
-                      "Chính trị: Giữ vững vai trò lãnh đạo của Đảng, Nhà nước của dân.",
-                      "Kinh tế: Phát triển LLSX, công nghiệp hóa - hiện đại hóa.",
-                      "Văn hóa: Xây dựng nền văn hóa đậm đà bản sắc dân tộc.",
-                      "Quan hệ xã hội: Đảm bảo công bằng, dân chủ, văn minh."
+                      "Chủ thể: Toàn thể nhân dân, không phân biệt giai cấp, tôn giáo.",
+                      "Nền tảng: Liên minh công nhân - nông dân - trí thức.",
+                      "Hạt nhân: Sự đoàn kết và thống nhất trong Đảng.",
+                      "Giải quyết hài hòa mối quan hệ giữa giai cấp, dân tộc."
                     ]}
                   />
                   <ExhibitionCard
                     icon={<BookOpen className="w-8 h-8 text-[#8B0000] dark:text-[#D4AF37]" />}
-                    title="4. Nguyên tắc xây dựng CNXH"
+                    title="4. Điều kiện & Nguyên tắc"
                     delay={0.4}
                     items={[
-                      "Dựa trên nền tảng Chủ nghĩa Mác - Lênin.",
-                      "Giữ vững độc lập dân tộc làm cốt lõi.",
-                      "Học hỏi, vận dụng sáng tạo kinh nghiệm quốc tế.",
-                      "Kết hợp chặt chẽ: Xây đi đôi với chống."
+                      "Lấy lợi ích chung làm điểm quy tụ, tôn trọng lợi ích khác biệt.",
+                      "Kế thừa truyền thống yêu nước, nhân nghĩa của dân tộc.",
+                      "Có lòng khoan dung, độ lượng và niềm tin vào nhân dân.",
+                      "Mặt trận dân tộc thống nhất phải hoạt động theo nguyên tắc hiệp thương dân chủ."
                     ]}
                   />
                 </div>
@@ -1152,19 +1152,19 @@ export default function App() {
             </section>
 
             {/* ==========================================
-                C. SESSION 11
+                C. SESSION 11 (PHẦN II)
             ========================================== */}
             <section id="session11" className="py-32 relative z-10 bg-white dark:bg-black/40 border-t border-gray-200 dark:border-white/5">
               <div className="container mx-auto px-4 md:px-8 max-w-6xl">
                 <div className="flex flex-col lg:flex-row gap-16 items-center">
                   <motion.div initial={{ opacity: 0, x: -50 }} whileInView={{ opacity: 1, x: 0 }} viewport={{ once: true }} className="lg:w-1/2">
-                    <span className="text-[#8B0000] dark:text-[#D4AF37] tracking-[0.3em] text-sm font-bold uppercase mb-4 block">Session 11</span>
+                    <span className="text-[#8B0000] dark:text-[#D4AF37] tracking-[0.3em] text-sm font-bold uppercase mb-4 block">Phần II</span>
                     <h2 className="text-4xl md:text-5xl font-serif font-bold text-gray-900 dark:text-white uppercase tracking-wide leading-tight mb-8">
-                      Độc Lập Dân Tộc <br /> <span className="text-transparent bg-clip-text bg-gradient-to-r from-[#8B0000] to-red-500 dark:to-[#D4AF37]">&</span> Chủ Nghĩa Xã Hội
+                      Đoàn Kết <br /> <span className="text-transparent bg-clip-text bg-gradient-to-r from-[#8B0000] to-red-500 dark:to-[#D4AF37]">Quốc Tế</span>
                     </h2>
                     <div className="prose prose-lg dark:prose-invert text-gray-700 dark:text-gray-300">
                       <p className="leading-relaxed border-l-4 border-[#8B0000] pl-6 italic">
-                        "Độc lập dân tộc là tiền đề, là điều kiện tiên quyết để xây dựng chủ nghĩa xã hội. Và ngược lại, xây dựng chủ nghĩa xã hội là cơ sở đảm bảo vững chắc cho độc lập dân tộc."
+                        "Thực hiện đoàn kết quốc tế nhằm kết hợp sức mạnh dân tộc với sức mạnh thời đại, tạo sức mạnh tổng hợp cho cách mạng."
                       </p>
                     </div>
                   </motion.div>
@@ -1174,17 +1174,17 @@ export default function App() {
 
                     <div className="relative pl-16">
                       <div className="absolute left-4 top-2 w-5 h-5 bg-white dark:bg-[#0A0A0A] border-2 border-red-500 dark:border-[#D4AF37] rounded-full shadow-[0_0_15px_rgba(255,0,0,0.5)] dark:shadow-[0_0_15px_rgba(212,175,55,0.8)]"></div>
-                      <h4 className="text-2xl font-bold text-gray-900 dark:text-white mb-2 font-serif">Sợi chỉ đỏ xuyên suốt</h4>
+                      <h4 className="text-2xl font-bold text-gray-900 dark:text-white mb-2 font-serif">Lực lượng đoàn kết</h4>
                       <p className="text-gray-600 dark:text-gray-400 text-sm leading-relaxed">
-                        Đây là tư tưởng cốt lõi, là ngọn cờ dẫn đường cho cách mạng Việt Nam. Sự kết hợp biện chứng giữa giải phóng dân tộc và giải phóng giai cấp.
+                        Bao gồm: phong trào cộng sản và công nhân quốc tế; phong trào đấu tranh giải phóng dân tộc; phong trào hòa bình, dân chủ thế giới.
                       </p>
                     </div>
 
                     <div className="relative pl-16">
                       <div className="absolute left-4 top-2 w-5 h-5 bg-white dark:bg-[#0A0A0A] border-2 border-[#8B0000] rounded-full shadow-[0_0_15px_rgba(139,0,0,0.5)] dark:shadow-[0_0_15px_rgba(139,0,0,0.8)]"></div>
-                      <h4 className="text-2xl font-bold text-gray-900 dark:text-white mb-2 font-serif">Vận dụng trong giai đoạn hiện nay</h4>
+                      <h4 className="text-2xl font-bold text-gray-900 dark:text-white mb-2 font-serif">Nguyên tắc cốt lõi</h4>
                       <p className="text-gray-600 dark:text-gray-400 text-sm leading-relaxed">
-                        Phát huy sức mạnh đại đoàn kết toàn dân tộc, kết hợp sức mạnh dân tộc với sức mạnh thời đại trong bối cảnh toàn cầu hóa và hội nhập quốc tế sâu rộng.
+                        Đoàn kết trên cơ sở thống nhất mục tiêu và lợi ích có lý, có tình; đồng thời phải đoàn kết trên cơ sở độc lập, tự chủ ("Tự lực cánh sinh, dựa vào sức mình là chính").
                       </p>
                     </div>
                   </motion.div>
@@ -1204,16 +1204,16 @@ export default function App() {
                     Tư liệu tương tác
                   </Badge>
                   <h2 className="text-4xl md:text-5xl font-serif font-bold text-gray-900 dark:text-white uppercase tracking-wide">
-                    Góc Đọc Sách
+                    Tập Hợp Lực Lượng
                   </h2>
                   <div className="w-16 h-[2px] bg-gradient-to-r from-transparent via-[#8B0000] to-transparent mx-auto mt-6 mb-6"></div>
                   <p className="text-gray-600 dark:text-gray-400 max-w-2xl mx-auto text-lg leading-relaxed">
-                    Lật mở từng trang tư liệu để tìm hiểu sâu hơn về bối cảnh lịch sử và giá trị thời đại của Tư tưởng Hồ Chí Minh.
+                    Trò chơi 3D tương tác giúp mô phỏng quá trình xây dựng khối đại đoàn kết toàn dân tộc và đoàn kết quốc tế theo tư tưởng Hồ Chí Minh.
                   </p>
                 </motion.div>
 
                 <div id="flipbook-reader" className="rounded-[2rem] border border-gray-200 dark:border-white/10 bg-white dark:bg-white/[0.02] backdrop-blur-md shadow-[0_0_40px_rgba(0,0,0,0.05)] dark:shadow-[0_0_40px_rgba(0,0,0,0.8)] p-4 md:p-8">
-                  <FlipBook />
+                  <UnityGame />
                 </div>
               </div>
             </section>

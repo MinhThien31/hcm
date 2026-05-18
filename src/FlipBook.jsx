@@ -19,30 +19,32 @@ const DEFAULT_PAGES = [
 ];
 
 const DEFAULT_STORY_TEXTS = [
-  "Tấm Khiên Giữa Dòng Thị Trường. Chào mừng các bạn đến với câu chuyện về một xóm chợ nhỏ trong những ngày đại dịch COVID-19. Qua biến cố này, chúng ta sẽ cùng tìm hiểu về bản chất của kinh tế thị trường định hướng xã hội chủ nghĩa tại Việt Nam – một nền kinh tế năng động nhưng luôn lấy con người làm trung tâm, đảm bảo không một ai bị bỏ lại phía sau.",
-  "Buổi sáng ở xóm chợ nhỏ bắt đầu trong ánh nắng vàng dịu nhẹ. Những gian hàng dần mở cửa, tiếng người gọi nhau í ới, tiếng mặc cả rôm rả vang lên khắp nơi. Rau xanh, thịt cá được bày biện gọn gàng, tạo nên một khung cảnh quen thuộc và đầy sức sống. Nơi đây không chỉ là chỗ mua bán, mà còn là nhịp sống thường ngày của người dân.",
-  "Ở một góc chợ, cô Lan – người bán thịt quen thuộc – đang nhanh tay chuẩn bị tinh hàng cho khách. Dù công việc bận rộn, cô vẫn luôn nở nụ cười thân thiện, trò chuyện vui vẻ với mọi người. Sự chăm chỉ và nhiệt tình của cô đã trở thành một phần không thể thiếu của khu chợ nhỏ này.",
-  "Giữa dòng người tấp nập, bà Tâm dắt tay bé Na đi chợ, bà chọn từng bó rau, cân nhắc từng món đồ còn bé Na thì tò mò nhìn ngắm xung quanh. Hình ảnh 2 bà cháu giản dị nhưng ấm áp ấy khiến khung cảnh chợ thêm gần gũi và yêu thương",
-  "Những giao dịch diễn ra liên tục, người bán kẻ mua trao đổi nhanh chóng. Đồng tiền được trao tay, hàng hóa được chuyển đi, tất cả tạo nên một vòng quay nhịp nhàng của cuộc sống. Đây chính là hình ảnh rõ nét của một thị trường vận hành ổn định và tự nhiên.",
-  "Khi ngày dần tắt, mọi người trở về nhà. Trong căn bếp nhỏ, bữa cơm gia đình được dọn ra đơn giản nhưng đầy đủ. Tiếng cười nói vang lên bên mâm cơm, thể hiện một cuộc sống tuy không dư dả nhưng đủ đầy và hạnh phúc.",
-  "Một ngày, một cuộc gọi đã thay đổi tất cả. Từ giây phút đó, một hành trình mới chính thức bắt đầu.Một buổi tối, tin tức về dịch bệnh bất ngờ xuất hiện trên màn hình TV. Những con số và thông báo khẩn khiến người xem không khỏi lo lắng. Không khí trong căn nhà trở nên trầm lắng, báo hiệu một biến cố đang đến gần.",
-  "Ngay sau đó, người dân đổ xô đến chợ để mua hàng tích trữ. Không còn sự trật tự như trước, thay vào đó là cảnh chen lấn, vội vã. Ai cũng cố gắng mua thật nhiều trong nỗi lo sợ thiếu thốn.",
-  "Cô Lan đứng giữa khung cảnh hỗn loạn, tay vẫn làm việc nhưng ánh mắt đầy lo âu. Việc buôn bán không còn đơn thuần như trước, mà trở thành áp lực khi mọi thứ đều biến động.",
-  "Trên bảng giá: BÁN LẺ... 20,000đ, 55,000đ, 35,000đ, 110,000đ. Tăng giá",
-  "Bà Tâm cầm những đồng tiền ít ỏi trong tay, nhìn vào các mặt hàng mà không biết nên chọn gì. Giá cả tăng cao khiến bà không thể mua đủ những thứ cần thiết.",
-  "Cuối cùng, hai bà cháu đành lặng lẽ rời khỏi chợ. Bóng lưng họ kéo dài trên con đường vắng, mang theo sự buồn bã và nỗi lo về những ngày sắp tới.",
-  "Giữa lúc khó khăn nhất, những chiếc xe quân đội chở đầy hàng hóa tiến vào khu dân cư. Sự xuất hiện ấy mang theo hy vọng và sự hỗ trợ kịp thời cho người dân.",
-  "Các cán bộ dùng loa thông báo những chính sách hỗ trợ từ Nhà nước. Giọng nói vang lên rõ ràng, giúp người dân hiểu rằng họ không hề đơn độc trong lúc khó khăn.",
-  "Những bao gạo, nhu yếu phẩm được trao tận tay từng người dân. Khoảnh khắc ấy không chỉ là sự giúp đỡ về vật chất mà còn là sự sẻ chia đầy nhân văn.",
-  " Bà Tâm ôm chặt túi gạo trong tay, nước mắt lăn dài trên má. Đó là giọt nước mắt của sự biết ơn và nhẹ nhõm khi được giúp đỡ đúng lúc.",
-  "Cô Lan nhận được thông tin về các chính sách hỗ trợ, gương mặt dần giãn ra sau những ngày lo lắng. Việc buôn bán có cơ hội ổn định trở lại.",
-  "Giá cả trên bảng được điều chỉnh xuống mức hợp lý hơn. Không khí chợ dần trở nên ổn định, người dân bớt đi phần nào áp lực.",
-  "Tại trạm y tế, các bác sĩ tận tình chăm sóc bệnh nhân. Những đứa trẻ và và người già được quan tâm chu đáo, tạo cảm giác an ân cho cả cộng đồng.",
-  " Những tấm thẻ bảo hiểm được trao đến tay người dân. Đây không chỉ là hỗ trợ trước mắt mà còn là sự đảm bảo dài cho sức khỏe của họ.",
-  "Sau những ngày khó khăn, xóm chợ dần hoạt động trở lại. Tiếng cười nói, mua bán nhộn nhịp lại vang lên như trước.",
-  "Bé Na nhận được viên kẹo từ người bán hàng, nụ cười hồn nhiên nở trên môi. Đó là dấu hiệu của sự bình yên đã quay trở lại.",
-  "Người dân trong chợ cùng nhau trò chuyện, chia sẻ niềm vui. Sự gắn kết cộng đồng trở nên mạnh mẽ hơn sau biến cố.",
-  "Từ trên cao nhìn xuống, xóm chợ nhỏ nằm giữa thành phố hiện đại, đón ánh bình minh mới. Một chặng đường khó khăn đã qua, mở ra tương lai tươi sáng hơn cho tất cả mọi người."
+  "Chương 5: Đại Đoàn Kết Toàn Dân Tộc. Chào mừng các bạn đến với câu chuyện về một xóm chợ nhỏ trong những ngày đại dịch COVID-19. Qua biến cố này, chúng ta sẽ thấy rõ sức mạnh vô địch của khối đại đoàn kết toàn dân tộc theo tư tưởng Hồ Chí Minh.",
+  "Buổi sáng ở xóm chợ nhỏ thanh bình. Những người tiểu thương, nông dân, công nhân cùng sinh hoạt và buôn bán. Hồ Chí Minh từng nói, đại đa số nhân dân là nền gốc của đại đoàn kết. Hình ảnh xóm chợ chính là một góc thu nhỏ của khối liên minh ấy.",
+  "Cô Lan – người bán thịt, luôn nở nụ cười thân thiện. Trong tư tưởng Bác, mỗi người dân lao động đều là một tế bào quan trọng của xã hội, không phân biệt nghề nghiệp hay tầng lớp.",
+  "Bà Tâm dắt bé Na đi chợ. Tình làng nghĩa xóm giản dị này chính là biểu hiện sinh động của truyền thống yêu nước, nhân nghĩa và tinh thần tương thân tương ái của dân tộc ta.",
+  "Mọi giao dịch diễn ra nhịp nhàng. Khối đại đoàn kết được xây dựng vững chắc khi các tầng lớp nhân dân cùng chung sống hòa thuận, đóng góp vào sự phát triển chung của đất nước.",
+  "Bữa cơm gia đình ấm áp. Mục tiêu của đại đoàn kết cuối cùng cũng là vì hạnh phúc của nhân dân, để ai cũng có cơm ăn, áo mặc, ai cũng được học hành như Bác hằng mong muốn.",
+  "Thế nhưng, đại dịch COVID-19 bất ngờ ập đến như một cơn bão. Tin tức khẩn cấp trên TV báo hiệu một cuộc chiến không tiếng súng, đòi hỏi toàn dân tộc phải đồng lòng đối mặt.",
+  "Ban đầu, sự hoang mang khiến người dân đổ xô đi tích trữ hàng hóa. Khi khối đoàn kết chưa được tổ chức chặt chẽ và đối diện với nỗi sợ, sự hoảng loạn là điều dễ hiểu.",
+  "Cô Lan lo âu giữa khung cảnh hỗn loạn. Những khó khăn này là phép thử lớn đối với sức chịu đựng và tinh thần gắn kết của cộng đồng.",
+  "Bảng giá tăng vọt ở một số nơi do thiếu thốn. Việc đặt lợi ích cá nhân lên trên lợi ích chung trong lúc nguy nan có thể làm rạn nứt khối đại đoàn kết nếu không được chấn chỉnh kịp thời.",
+  "Bà Tâm và bé Na lo lắng không mua đủ nhu yếu phẩm. Hồ Chí Minh luôn dặn: 'Phải chú ý giải quyết hết các vấn đề thiết thực của dân', không để ai bị bỏ lại phía sau.",
+  "Bóng lưng hai bà cháu buồn bã rời chợ. Nếu không có sự can thiệp của Mặt trận và Nhà nước, những người yếu thế sẽ chịu thiệt thòi nhất trong khủng hoảng.",
+  "Giữa lúc khó khăn nhất, bộ đội và xe chở hàng cứu trợ tiến vào. Quân đội nhân dân từ nhân dân mà ra, vì nhân dân mà chiến đấu, minh chứng cho sức mạnh đoàn kết quân dân.",
+  "Cán bộ dùng loa thông báo chính sách hỗ trợ. Nhà nước và Mặt trận Tổ quốc đã làm tốt công tác dân vận, thông tin minh bạch để quy tụ lòng dân, tạo niềm tin vững chắc.",
+  "Những bao gạo được trao tận tay. Đây không chỉ là vật chất, mà là sự sẻ chia đùm bọc, thể hiện nguyên tắc lấy lợi ích của nhân dân làm điểm quy tụ của khối đại đoàn kết.",
+  "Bà Tâm rơi nước mắt xúc động ôm túi gạo. Niềm tin của nhân dân vào Đảng và Nhà nước được củng cố. Yêu dân, tin dân và dựa vào dân là nguyên tắc tối cao.",
+  "Cô Lan an tâm khi có chính sách hỗ trợ. Khối đại đoàn kết đã phát huy tác dụng, biến nhu cầu tự phát thành hành động tự giác, chia sẻ khó khăn cùng cộng đồng.",
+  "Giá cả ổn định trở lại. Khi mọi người đồng lòng tuân thủ quy định và hiệp thương dân chủ, trật tự xã hội được thiết lập lại nhanh chóng.",
+  "Tại trạm y tế, các bác sĩ tận tình chăm sóc. Không chỉ có sức mạnh trong nước, Việt Nam còn nhận được sự hỗ trợ vaccine và thiết bị từ bạn bè quốc tế, minh chứng cho tình đoàn kết quốc tế.",
+  "Tấm thẻ bảo hiểm và sự chăm sóc y tế là minh chứng cho chế độ ưu việt. Việc kết hợp sức mạnh dân tộc và sức mạnh thời đại đã tạo nên lá chắn vững chắc chống lại đại dịch.",
+  "Xóm chợ dần hoạt động trở lại sau bão giông. Sức mạnh đại đoàn kết đã giúp chúng ta chiến thắng dịch bệnh, bảo vệ tính mạng và sức khỏe nhân dân.",
+  "Bé Na nhận viên kẹo, nụ cười hồn nhiên nở trên môi. Tương lai tươi sáng được bảo vệ nhờ truyền thống đoàn kết vững bền của dân tộc Việt Nam.",
+  "Người dân chia sẻ niềm vui. Tình đoàn kết không chỉ giúp vượt qua gian khó mà còn gắn bó mọi người chặt chẽ hơn, tạo động lực to lớn cho sự phát triển.",
+  "Từ trên cao nhìn xuống, xóm chợ bình yên đón bình minh. Sức mạnh tổng hợp từ khối đại đoàn kết toàn dân tộc chính là cội nguồn của mọi thắng lợi.",
+  "Khép lại câu chuyện, hình ảnh xóm chợ nhỏ trong đại dịch đã minh chứng sinh động cho chân lý vĩ đại của Bác Hồ: 'Đoàn kết, đoàn kết, đại đoàn kết. Thành công, thành công, đại thành công'.",
+  "Tư liệu kết thúc. Hãy luôn ghi nhớ và phát huy tinh thần đại đoàn kết toàn dân tộc và đoàn kết quốc tế trong công cuộc xây dựng và bảo vệ Tổ quốc hôm nay."
 ];
 
 const DEFAULT_AUDIO_FILES = [
@@ -634,7 +636,7 @@ const FlipBook = React.forwardRef((props = {}, ref) => {
       {!externalAudioRef && <audio ref={internalAudioRef} preload="auto" />}
 
       <div className="flipbook-header">
-        <h1 className="flipbook-title">Tấm Khiên Giữa Dòng Thị Trường</h1>
+        <h1 className="flipbook-title">Sức Mạnh Từ Sự Đồng Lòng</h1>
         <p style={{ opacity: 0.7 }}>
           Sử dụng nút cuộn hoặc click để lật trang
         </p>
