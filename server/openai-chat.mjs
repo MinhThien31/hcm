@@ -1,4 +1,5 @@
 import OpenAI from "openai";
+import { existsSync } from "node:fs";
 import { readdir, readFile } from "node:fs/promises";
 import path from "node:path";
 import { fileURLToPath } from "node:url";
@@ -79,6 +80,24 @@ function getLocalRagMaxChunks(env) {
   return Math.max(1, Math.min(configured, 8));
 }
 
+function isInsideRoot(childPath, rootPath) {
+  const relative = path.relative(rootPath, childPath);
+  return relative === "" || (relative && !relative.startsWith("..") && !path.isAbsolute(relative));
+}
+
+function resolveLocalRagRoot(env, dirs) {
+  const candidates = [
+    env.OPENAI_LOCAL_RAG_ROOT && path.resolve(env.OPENAI_LOCAL_RAG_ROOT),
+    repoRoot,
+    path.resolve(process.cwd()),
+    path.resolve(__dirname, "..", ".."),
+  ].filter(Boolean);
+
+  return candidates.find((candidate) => (
+    dirs.some((dir) => existsSync(path.resolve(candidate, dir)))
+  )) || repoRoot;
+}
+
 function isOfficialOpenAIBaseURL(baseURL) {
   if (!baseURL) return true;
 
@@ -131,14 +150,15 @@ function chunkText(text, source) {
 
 async function loadLocalKnowledge(env) {
   const dirs = getLocalRagDirs(env);
-  const cacheKey = dirs.join("|");
+  const ragRoot = resolveLocalRagRoot(env, dirs);
+  const cacheKey = `${ragRoot}|${dirs.join("|")}`;
 
   if (localKnowledgeCache?.key === cacheKey) return localKnowledgeCache.chunks;
 
   const chunks = [];
   for (const dir of dirs) {
-    const absoluteDir = path.resolve(repoRoot, dir);
-    if (!absoluteDir.startsWith(repoRoot)) continue;
+    const absoluteDir = path.resolve(ragRoot, dir);
+    if (!isInsideRoot(absoluteDir, ragRoot)) continue;
 
     let entries;
     try {
@@ -151,7 +171,7 @@ async function loadLocalKnowledge(env) {
       if (!entry.isFile() || !entry.name.endsWith(".md")) continue;
 
       const absoluteFile = path.join(absoluteDir, entry.name);
-      const relativeFile = path.relative(repoRoot, absoluteFile).replace(/\\/g, "/");
+      const relativeFile = path.relative(ragRoot, absoluteFile).replace(/\\/g, "/");
       const text = await readFile(absoluteFile, "utf8");
       chunks.push(...chunkText(text, relativeFile));
     }
