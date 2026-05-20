@@ -3,15 +3,7 @@ import { existsSync, readdirSync, readFileSync } from "node:fs";
 import { basename, extname, join, resolve } from "node:path";
 import { fileURLToPath } from "node:url";
 
-const apiKey = process.env.OPENAI_API_KEY || process.env.VITE_LLM_API_KEY;
-const apiBase = process.env.OPENAI_BASE_URL || "https://api.openai.com/v1";
 const projectRoot = resolve(fileURLToPath(new URL("..", import.meta.url)));
-const knowledgeDir = resolve(process.env.HCM_KNOWLEDGE_DIR || join(projectRoot, "knowledge"));
-
-if (!apiKey) {
-  console.error("Missing OPENAI_API_KEY. Set it before running this script.");
-  process.exit(1);
-}
 
 function readEnvFile(path) {
   if (!existsSync(path)) return {};
@@ -29,6 +21,27 @@ function readEnvFile(path) {
 }
 
 const localEnv = readEnvFile(join(projectRoot, ".env.local"));
+const apiKey = process.env.OPENAI_API_KEY || localEnv.OPENAI_API_KEY || localEnv.VITE_LLM_API_KEY;
+const apiBase =
+  process.env.OPENAI_BASE_URL ||
+  localEnv.OPENAI_BASE_URL ||
+  localEnv.VITE_LLM_BASE_URL ||
+  "https://api.openai.com/v1";
+const configuredKnowledgeDirs = (process.env.HCM_KNOWLEDGE_DIRS || "")
+  .split(",")
+  .map((dir) => dir.trim())
+  .filter(Boolean);
+const knowledgeDirs = configuredKnowledgeDirs.length > 0
+  ? configuredKnowledgeDirs.map((dir) => resolve(dir))
+  : [
+      resolve(join(projectRoot, "knowledge")),
+      resolve(join(projectRoot, "knowledge-full")),
+    ];
+
+if (!apiKey) {
+  console.error("Missing OPENAI_API_KEY. Set it before running this script.");
+  process.exit(1);
+}
 
 async function request(path, options = {}) {
   const response = await fetch(`${apiBase}${path}`, {
@@ -114,27 +127,40 @@ function parseFrontMatter(filePath) {
 }
 
 function listKnowledgeFiles() {
-  if (!existsSync(knowledgeDir)) {
-    throw new Error(`Knowledge directory not found: ${knowledgeDir}`);
+  const files = [];
+
+  for (const knowledgeDir of knowledgeDirs) {
+    if (!existsSync(knowledgeDir)) continue;
+
+    files.push(
+      ...readdirSync(knowledgeDir)
+        .filter((name) => [".md", ".txt", ".pdf"].includes(extname(name).toLowerCase()))
+        .filter((name) => !name.includes("placeholder"))
+        .map((name) => join(knowledgeDir, name))
+    );
   }
 
-  return readdirSync(knowledgeDir)
-    .filter((name) => [".md", ".txt", ".pdf"].includes(extname(name).toLowerCase()))
-    .filter((name) => !name.includes("placeholder"))
-    .map((name) => join(knowledgeDir, name));
+  return files;
 }
 
-const chapter3StoreId =
-  process.env.HCM_CHAPTER3_VECTOR_STORE_ID ||
-  process.env.VITE_HCM_CHAPTER3_VECTOR_STORE_ID ||
-  localEnv.VITE_HCM_CHAPTER3_VECTOR_STORE_ID;
+const configuredVectorStoreId = (
+  process.env.OPENAI_VECTOR_STORE_ID ||
+  process.env.OPENAI_VECTOR_STORE_IDS ||
+  localEnv.OPENAI_VECTOR_STORE_ID ||
+  localEnv.OPENAI_VECTOR_STORE_IDS ||
+  process.env.VITE_HCM_CHAPTER5_VECTOR_STORE_ID ||
+  process.env.VITE_HCM_TEXTBOOK_VECTOR_STORE_ID ||
+  localEnv.VITE_HCM_CHAPTER5_VECTOR_STORE_ID ||
+  localEnv.VITE_HCM_TEXTBOOK_VECTOR_STORE_ID ||
+  ""
+).split(",")[0].trim();
 
 const vectorStore =
-  chapter3StoreId ||
+  configuredVectorStoreId ||
   (
     await createVectorStore(
-      "HCM Chapter 3 Knowledge",
-      "Tu tuong Ho Chi Minh chapter 3, Session 10-12, and OCR textbook excerpts."
+      "HCM Knowledge",
+      "Tu tuong Ho Chi Minh course knowledge, notes, and OCR textbook excerpts."
     )
   ).id;
 
@@ -149,7 +175,6 @@ if (files.length === 0) {
 for (const filePath of files) {
   const attributes = {
     subject: "hcm",
-    chapter: "3",
     priority: "primary",
     ...parseFrontMatter(filePath),
   };
@@ -164,4 +189,4 @@ for (const filePath of files) {
 
 console.log("");
 console.log("Done. Put this in .env.local:");
-console.log(`VITE_HCM_CHAPTER3_VECTOR_STORE_ID=${vectorStore}`);
+console.log(`OPENAI_VECTOR_STORE_IDS=${vectorStore}`);

@@ -7,6 +7,7 @@
     "dev": "vite --port=3000 --host=0.0.0.0",
     "build": "vite build",
     "preview": "vite preview",
+    "start": "node server.mjs",
     "prepare:hcm-chapter3": "python scripts/prepare-hcm-textbook-ocr.py",
     "prepare:hcm-full": "python scripts/prepare-hcm-full-textbook-ocr.py",
     "upload:hcm-knowledge": "node scripts/upload-hcm-knowledge.mjs",
