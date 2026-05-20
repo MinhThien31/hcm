@@ -1,6 +1,6 @@
 import { useState, useRef, useEffect, useMemo, Suspense } from "react";
 import { motion, AnimatePresence } from "motion/react";
-import { Toaster, toast } from "sonner";
+import { Toaster } from "sonner";
 import {
   BookOpen,
   MessageSquare,
@@ -12,12 +12,6 @@ import {
   Zap,
   ArrowRight,
   Info,
-  LogOut,
-  User,
-  Settings,
-  History,
-  LogIn,
-  Camera,
   Sun,
   Moon,
   Flag,
@@ -29,7 +23,7 @@ import {
 import ReactMarkdown from "react-markdown";
 import remarkGfm from "remark-gfm";
 import { cn } from "@/lib/utils";
-import { Button, buttonVariants } from "@/components/ui/button";
+import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { ScrollArea } from "@/components/ui/scroll-area";
@@ -37,30 +31,9 @@ import { Badge } from "@/components/ui/badge";
 import { Separator } from "@/components/ui/separator";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Html } from '@react-three/drei';
-import {
-  Dialog,
-  DialogContent,
-  DialogDescription,
-  DialogHeader,
-  DialogTitle,
-  DialogTrigger,
-  DialogFooter
-} from "@/components/ui/dialog";
-import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { CinematicReveal } from "./CinematicReveal"; 
-import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuGroup,
-  DropdownMenuItem,
-  DropdownMenuLabel,
-  DropdownMenuSeparator,
-  DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu";
 // import { FooterQuiz } from "@/components/footer-quiz";
 import { getChatResponse } from "./lib/gemini";
-import { auth, googleProvider } from "./lib/firebase";
-import { signInWithPopup, signOut, onAuthStateChanged, User as FirebaseUser, createUserWithEmailAndPassword, signInWithEmailAndPassword, updateProfile, sendPasswordResetEmail } from "firebase/auth";
 import UnityGame from "./UnityGame";
 import { Footer } from "./Footer"; // Sửa lại đường dẫn nếu bạn để ở thư mục khác, VD: "./components/Footer"
 // ==========================================
@@ -80,10 +53,28 @@ interface Message {
   timestamp?: any;
 }
 
-interface UserProfile {
-  displayName: string;
-  photoURL?: string;
-}
+const CHAT_MESSAGES_KEY = "thbc_messages_guest";
+
+const getDefaultWelcomeMessage = (): Message[] => ([
+  { role: "model", text: "Xin chào! Tôi là trợ lý ảo chuyên về Tư tưởng Hồ Chí Minh - Chương 5: Đại đoàn kết toàn dân tộc và đoàn kết quốc tế. Bạn muốn tìm hiểu về nội dung nào hôm nay?" }
+]);
+
+const loadLocalMessages = (): Message[] => {
+  if (typeof window === "undefined") return getDefaultWelcomeMessage();
+  try {
+    const raw = localStorage.getItem(CHAT_MESSAGES_KEY);
+    const saved = raw ? JSON.parse(raw) : [];
+    return Array.isArray(saved) && saved.length > 0 ? saved : getDefaultWelcomeMessage();
+  } catch {
+    return getDefaultWelcomeMessage();
+  }
+};
+
+const saveLocalMessages = (nextMessages: Message[]) => {
+  if (typeof window !== "undefined") {
+    localStorage.setItem(CHAT_MESSAGES_KEY, JSON.stringify(nextMessages));
+  }
+};
 
 interface Law {
   id: string;
@@ -645,79 +636,21 @@ const InteractiveLibrary = () => {
 // ==========================================
 export default function App() {
   const [activeTab, setActiveTab] = useState<'main' | 'library'>('main');
-  const [isUpdatingProfile, setIsUpdatingProfile] = useState(false);
-  const [user, setUser] = useState<FirebaseUser | null>(null);
-  const [profile, setProfile] = useState<UserProfile | null>(null);
   const [isChatOpen, setIsChatOpen] = useState(false);
-  const [messages, setMessages] = useState<Message[]>([
-    { role: "model", text: "Xin chào! Tôi là trợ lý ảo chuyên về Tư tưởng Hồ Chí Minh - Chương 5: Đại đoàn kết toàn dân tộc và đoàn kết quốc tế. Bạn muốn tìm hiểu về nội dung nào hôm nay?" }
-  ]);
+  const [messages, setMessages] = useState<Message[]>(() => loadLocalMessages());
   const [inputValue, setInputValue] = useState("");
   const [isLoading, setIsLoading] = useState(false);
-  const [isProfileDialogOpen, setIsProfileDialogOpen] = useState(false);
-  const [isAuthDialogOpen, setIsAuthDialogOpen] = useState(false);
   const [theme, setTheme] = useState<"light" | "dark">(() => {
     if (typeof window !== "undefined") {
       return (localStorage.getItem("theme") as "light" | "dark") || "light";
     }
     return "light";
   });
-  const [authMode, setAuthMode] = useState<"login" | "register">("login");
-  const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
-  const [confirmPassword, setConfirmPassword] = useState("");
-  const [registerName, setRegisterName] = useState("");
-  const [authError, setAuthError] = useState("");
-  const [isAuthSubmitting, setIsAuthSubmitting] = useState(false);
-  const [newDisplayName, setNewDisplayName] = useState("");
-  const [newPhotoURL, setNewPhotoURL] = useState("");
   const [selectedCategory, setSelectedCategory] = useState<Category | null>(null);
-  const [isCloudChatEnabled, setIsCloudChatEnabled] = useState(true);
   const experienceUrl = typeof window !== "undefined" ? window.location.href : "https://example.com";
   const qrCodeUrl = `..\\public\\images\\1. QUY LUẬT LƯỢNG - CHẤT...png`; // Rút gọn để hiển thị
 
   const messagesEndRef = useRef<HTMLDivElement>(null);
-
-  const getLocalProfileKey = (uid: string) => `thbc_profile_${uid}`;
-  const getLocalMessagesKey = (uid: string) => `thbc_messages_${uid}`;
-
-  const loadLocalProfile = (currentUser: FirebaseUser): UserProfile => {
-    try {
-      const raw = localStorage.getItem(getLocalProfileKey(currentUser.uid));
-      const saved = raw ? JSON.parse(raw) : {};
-      return {
-        displayName: saved.displayName || currentUser.displayName || "Người dùng",
-        photoURL: saved.photoURL || currentUser.photoURL || ""
-      };
-    } catch {
-      return {
-        displayName: currentUser.displayName || "Người dùng",
-        photoURL: currentUser.photoURL || ""
-      };
-    }
-  };
-
-  const saveLocalProfile = (uid: string, nextProfile: UserProfile) => {
-    localStorage.setItem(getLocalProfileKey(uid), JSON.stringify(nextProfile));
-  };
-
-  const getDefaultWelcomeMessage = (): Message[] => ([
-    { role: "model", text: "Xin chào! Tôi là trợ lý ảo chuyên về Tư tưởng Hồ Chí Minh - Chương 5: Đại đoàn kết toàn dân tộc và đoàn kết quốc tế. Bạn muốn tìm hiểu về nội dung nào hôm nay?" }
-  ]);
-
-  const loadLocalMessages = (uid: string): Message[] => {
-    try {
-      const raw = localStorage.getItem(getLocalMessagesKey(uid));
-      const saved = raw ? JSON.parse(raw) : [];
-      return Array.isArray(saved) && saved.length > 0 ? saved : getDefaultWelcomeMessage();
-    } catch {
-      return getDefaultWelcomeMessage();
-    }
-  };
-
-  const saveLocalMessages = (uid: string, nextMessages: Message[]) => {
-    localStorage.setItem(getLocalMessagesKey(uid), JSON.stringify(nextMessages));
-  };
 
   useEffect(() => {
     const root = window.document.documentElement;
@@ -739,164 +672,13 @@ export default function App() {
     }
   }, [messages, isChatOpen]);
 
-  useEffect(() => {
-    const unsubscribe = onAuthStateChanged(auth, async (currentUser) => {
-      setUser(currentUser);
-
-      if (!currentUser) {
-        setProfile(null);
-        setIsCloudChatEnabled(false);
-        setMessages(getDefaultWelcomeMessage());
-        return;
-      }
-
-      const localProfile = loadLocalProfile(currentUser);
-      setProfile(localProfile);
-      saveLocalProfile(currentUser.uid, localProfile);
-      setIsCloudChatEnabled(false);
-      setMessages(loadLocalMessages(currentUser.uid));
-    });
-    return () => unsubscribe();
-  }, []);
-
-  const resetAuthForm = () => {
-    setEmail("");
-    setPassword("");
-    setConfirmPassword("");
-    setRegisterName("");
-    setAuthError("");
-  };
-
-  const getReadableAuthError = (error: any, mode: "login" | "register") => {
-    const code = error?.code;
-    switch (code) {
-      case "auth/email-already-in-use": return "Email này đã được sử dụng.";
-      case "auth/invalid-credential":
-      case "auth/wrong-password":
-      case "auth/user-not-found":
-      case "auth/invalid-login-credentials": return "Email hoặc mật khẩu không chính xác.";
-      case "auth/weak-password": return "Mật khẩu quá yếu. Hãy dùng ít nhất 6 ký tự.";
-      default: return mode === "register" ? "Đăng ký thất bại. Vui lòng thử lại." : "Đăng nhập thất bại. Vui lòng thử lại.";
-    }
-  };
-
-  const handleLogin = () => {
-    resetAuthForm();
-    setIsAuthDialogOpen(true);
-    setAuthMode("login");
-  };
-
-  const handleGoogleLogin = async () => {
-    setAuthError("");
-    setIsAuthSubmitting(true);
-    try {
-      await signInWithPopup(auth, googleProvider);
-      setIsAuthDialogOpen(false);
-      resetAuthForm();
-      toast.success("Đăng nhập thành công!");
-    } catch (error: any) {
-      setAuthError(getReadableAuthError(error, "login") + ` (${error?.code || 'unknown'})`);
-    } finally {
-      setIsAuthSubmitting(false);
-    }
-  };
-
-  const handleEmailAuth = async (e: React.FormEvent) => {
-    e.preventDefault();
-    const normalizedEmail = email.trim().toLowerCase();
-    setAuthError("");
-
-    if (!normalizedEmail) return setAuthError("Vui lòng nhập email.");
-    if (authMode === "register") {
-      if (password !== confirmPassword) return setAuthError("Mật khẩu xác nhận không khớp.");
-      if (password.length < 6) return setAuthError("Mật khẩu phải có ít nhất 6 ký tự.");
-      if (!registerName.trim()) return setAuthError("Vui lòng nhập tên của bạn.");
-    }
-
-    setIsAuthSubmitting(true);
-
-    try {
-      if (authMode === "register") {
-        const userCredential = await createUserWithEmailAndPassword(auth, normalizedEmail, password);
-        await updateProfile(userCredential.user, { displayName: registerName.trim() });
-        const nextProfile = { displayName: registerName.trim(), photoURL: userCredential.user.photoURL || "" };
-        saveLocalProfile(userCredential.user.uid, nextProfile);
-        setProfile(nextProfile);
-        setIsAuthDialogOpen(false);
-        resetAuthForm();
-        toast.success("Đăng ký thành công!");
-        return;
-      }
-      await signInWithEmailAndPassword(auth, normalizedEmail, password);
-      setIsAuthDialogOpen(false);
-      resetAuthForm();
-      toast.success("Đăng nhập thành công!");
-    } catch (error: any) {
-      setAuthError(getReadableAuthError(error, authMode));
-    } finally {
-      setIsAuthSubmitting(false);
-    }
-  };
-
-  const handleForgotPassword = async () => {
-    const normalizedEmail = email.trim().toLowerCase();
-    if (!normalizedEmail) return setAuthError("Hãy nhập email trước khi yêu cầu đặt lại mật khẩu.");
-    try {
-      await sendPasswordResetEmail(auth, normalizedEmail);
-      toast.success("Đã gửi email đặt lại mật khẩu.");
-    } catch (error: any) {
-      setAuthError(getReadableAuthError(error, "login"));
-    }
-  };
-
-  const handleLogout = async () => {
-    try {
-      await signOut(auth);
-      setIsChatOpen(false);
-    } catch (error) {
-      console.error("Logout failed", error);
-    }
-  };
-
-  const uploadToCloudinary = async (dataUrl: string) => {
-    const cloudName = (import.meta as any).env.VITE_CLOUDINARY_CLOUD_NAME;
-    const uploadPreset = (import.meta as any).env.VITE_CLOUDINARY_UPLOAD_PRESET;
-    if (!cloudName || !uploadPreset) throw new Error("Cloudinary configuration missing");
-    const formData = new FormData();
-    formData.append("file", dataUrl);
-    formData.append("upload_preset", uploadPreset);
-    const response = await fetch(`https://api.cloudinary.com/v1_1/${cloudName}/image/upload`, { method: "POST", body: formData });
-    if (!response.ok) throw new Error(`Cloudinary upload failed: ${response.statusText}`);
-    const data = await response.json();
-    return data.secure_url;
-  };
-
-  const handleUpdateProfile = async () => {
-    if (!user || !newDisplayName.trim()) return;
-    setIsUpdatingProfile(true);
-    try {
-      let photoURL = newPhotoURL.trim() || profile?.photoURL || "";
-      if (photoURL.startsWith("data:image/")) photoURL = await uploadToCloudinary(photoURL);
-      const updatedProfile = { displayName: newDisplayName.trim(), photoURL };
-      await updateProfile(user, updatedProfile);
-      saveLocalProfile(user.uid, updatedProfile);
-      setProfile(updatedProfile);
-      setIsProfileDialogOpen(false);
-      toast.success("Cập nhật hồ sơ thành công!");
-    } catch (error) {
-      toast.error("Cập nhật hồ sơ thất bại.");
-    } finally {
-      setIsUpdatingProfile(false);
-    }
-  };
-
   const scrollToBottom = () => messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
   useEffect(() => { scrollToBottom(); }, [messages]);
 
   const appendLocalMessage = (message: Message) => {
     setMessages(prev => {
       const next = [...prev, message];
-      if (user) saveLocalMessages(user.uid, next);
+      saveLocalMessages(next);
       return next;
     });
   };
@@ -967,49 +749,6 @@ export default function App() {
               <Button variant="ghost" size="icon" onClick={toggleTheme} className="rounded-full w-9 h-9 text-gray-700 dark:text-gray-200 hover:bg-gray-100 dark:hover:bg-white/10">
                 {theme === "light" ? <Moon className="w-4 h-4" /> : <Sun className="w-4 h-4" />}
               </Button>
-
-              {user ? (
-                <DropdownMenu>
-                  <DropdownMenuTrigger className={cn(buttonVariants({ variant: "ghost" }), "relative h-9 w-9 rounded-full p-0")}>
-                    <Avatar className="h-9 w-9 border border-gray-200 dark:border-primary/10">
-                      <AvatarImage src={profile?.photoURL || user.photoURL || ""} alt={profile?.displayName || ""} />
-                      <AvatarFallback>{(profile?.displayName || user.displayName || "U").charAt(0)}</AvatarFallback>
-                    </Avatar>
-                  </DropdownMenuTrigger>
-                  <DropdownMenuContent className="w-56" align="end">
-                    <DropdownMenuGroup>
-                      <DropdownMenuLabel className="font-normal">
-                        <div className="flex flex-col space-y-1">
-                          <p className="text-sm font-medium leading-none">{profile?.displayName || user.displayName}</p>
-                          <p className="text-xs leading-none text-muted-foreground">{user.email}</p>
-                        </div>
-                      </DropdownMenuLabel>
-                    </DropdownMenuGroup>
-                    <DropdownMenuSeparator />
-                    <DropdownMenuItem onClick={() => {
-                      setNewDisplayName(profile?.displayName || user.displayName || "");
-                      setNewPhotoURL(profile?.photoURL || user.photoURL || "");
-                      setIsProfileDialogOpen(true);
-                    }}>
-                      <Settings className="mr-2 h-4 w-4" />
-                      <span>Tùy chỉnh hồ sơ</span>
-                    </DropdownMenuItem>
-                    <DropdownMenuItem onClick={() => setIsChatOpen(true)}>
-                      <History className="mr-2 h-4 w-4" />
-                      <span>Lịch sử trò chuyện</span>
-                    </DropdownMenuItem>
-                    <DropdownMenuSeparator />
-                    <DropdownMenuItem onClick={handleLogout} variant="destructive">
-                      <LogOut className="mr-2 h-4 w-4" />
-                      <span>Đăng xuất</span>
-                    </DropdownMenuItem>
-                  </DropdownMenuContent>
-                </DropdownMenu>
-              ) : (
-                <Button variant="default" size="sm" onClick={handleLogin} className="rounded-full px-5 h-9 bg-gradient-to-r from-[#8B0000] to-red-900 text-white border border-[#D4AF37]/50 hover:shadow-[0_0_15px_rgba(212,175,55,0.3)]">
-                  <LogIn className="mr-2 h-4 w-4" /> Đăng nhập
-                </Button>
-              )}
 
               <Button variant="outline" size="sm" onClick={() => setIsChatOpen(true)} className="rounded-full h-9 border-[#8B0000] dark:border-[#D4AF37]/50 text-[#8B0000] dark:text-[#D4AF37] hover:bg-[#8B0000]/10 dark:hover:bg-[#D4AF37]/10">
                 Hỏi Chatbot
@@ -1248,21 +987,13 @@ export default function App() {
             <div className="p-6 bg-gradient-to-br from-gray-100 to-white dark:from-[#111] dark:to-black border-b border-gray-200 dark:border-white/10 flex items-center justify-between">
               <div className="flex items-center gap-4">
                 <div className="relative">
-                  {user ? (
-                    <Avatar className="w-12 h-12 rounded-2xl border-2 border-[#8B0000] dark:border-[#D4AF37] shadow-md dark:shadow-[0_0_15px_rgba(212,175,55,0.3)]">
-                      <AvatarImage src={profile?.photoURL || user.photoURL || ""} />
-                      <AvatarFallback className="bg-[#8B0000] text-white"><User className="w-6 h-6" /></AvatarFallback>
-                    </Avatar>
-                  ) : (
-                    <div className="w-12 h-12 rounded-2xl bg-gradient-to-tr from-[#8B0000] to-red-900 flex items-center justify-center border border-red-900/50 dark:border-[#D4AF37]/50">
-                      <MessageSquare className="w-6 h-6 text-white dark:text-[#D4AF37]" />
-                    </div>
-                  )}
+                  <div className="w-12 h-12 rounded-2xl bg-gradient-to-tr from-[#8B0000] to-red-900 flex items-center justify-center border border-red-900/50 dark:border-[#D4AF37]/50">
+                    <MessageSquare className="w-6 h-6 text-white dark:text-[#D4AF37]" />
+                  </div>
                   <div className="absolute -bottom-1 -right-1 w-4 h-4 bg-green-500 border-2 border-white dark:border-black rounded-full" />
                 </div>
                 <div>
                   <p className="font-serif font-bold text-lg leading-none mb-1 text-gray-900 dark:text-white">Triển Lãm AI</p>
-                  {user && <p className="text-[10px] text-[#8B0000] dark:text-[#D4AF37] font-medium uppercase tracking-wider">Chào, {profile?.displayName || user.displayName?.split(' ')[0]}</p>}
                 </div>
               </div>
               <Button variant="ghost" size="icon" className="rounded-full hover:bg-gray-200 dark:hover:bg-white/10 text-gray-500 dark:text-gray-400" onClick={() => setIsChatOpen(false)}>
@@ -1309,75 +1040,6 @@ export default function App() {
         )}
       </AnimatePresence>
 
-      {/* Dialog Cập nhật Profile */}
-      <Dialog open={isProfileDialogOpen} onOpenChange={setIsProfileDialogOpen}>
-        <DialogContent className="sm:max-w-[425px] rounded-[2rem] bg-white dark:bg-[#111] text-gray-900 dark:text-white border-gray-200 dark:border-white/10">
-          <DialogHeader>
-            <DialogTitle className="font-serif text-2xl text-[#8B0000] dark:text-[#D4AF37]">Tùy chỉnh hồ sơ</DialogTitle>
-            <DialogDescription className="text-gray-500 dark:text-gray-400">Thay đổi tên hiển thị và ảnh đại diện của bạn.</DialogDescription>
-          </DialogHeader>
-          <div className="grid gap-6 py-4">
-            <div className="flex justify-center">
-              <div className="relative group">
-                <Avatar className="w-24 h-24 border-4 border-gray-200 dark:border-[#8B0000]/50">
-                  <AvatarImage src={newPhotoURL || profile?.photoURL || user?.photoURL || ""} />
-                  <AvatarFallback className="text-2xl bg-gray-100 text-gray-600 dark:bg-black dark:text-[#D4AF37]">{(newDisplayName || user?.displayName || "U").charAt(0)}</AvatarFallback>
-                </Avatar>
-                <label className="absolute inset-0 flex items-center justify-center bg-black/40 dark:bg-black/60 rounded-full opacity-0 group-hover:opacity-100 transition-opacity cursor-pointer">
-                  <Camera className="w-6 h-6 text-white" />
-                  <input type="file" accept="image/*" className="hidden" onChange={(e) => { const f = e.target.files?.[0]; if (f) { const r = new FileReader(); r.onloadend = () => setNewPhotoURL(r.result as string); r.readAsDataURL(f); } }} />
-                </label>
-              </div>
-            </div>
-            <div className="grid gap-2">
-              <label htmlFor="name" className="text-sm font-medium px-1 text-gray-700 dark:text-gray-300">Tên hiển thị</label>
-              <Input id="name" value={newDisplayName} onChange={(e) => setNewDisplayName(e.target.value)} placeholder="Nhập tên..." className="rounded-full h-12 bg-gray-50 dark:bg-black border-gray-300 dark:border-white/20 text-gray-900 dark:text-white focus-visible:ring-[#8B0000]/30 dark:focus-visible:ring-[#D4AF37]/50" />
-            </div>
-          </div>
-          <DialogFooter>
-            <Button variant="outline" onClick={() => setIsProfileDialogOpen(false)} className="rounded-full border-gray-300 dark:border-white/20 text-gray-700 dark:text-white hover:bg-gray-100 dark:hover:bg-white/10">Hủy</Button>
-            <Button onClick={handleUpdateProfile} className="rounded-full px-8 bg-[#8B0000] dark:bg-[#D4AF37] text-white dark:text-black hover:bg-red-900 dark:hover:bg-[#b08d2b]" disabled={isUpdatingProfile}>{isUpdatingProfile ? "Đang lưu..." : "Lưu thay đổi"}</Button>
-          </DialogFooter>
-        </DialogContent>
-      </Dialog>
-
-      {/* Dialog Đăng Nhập */}
-      <Dialog open={isAuthDialogOpen} onOpenChange={(open) => { setIsAuthDialogOpen(open); if (!open) resetAuthForm(); }}>
-        <DialogContent className="sm:max-w-[400px] rounded-[2rem] p-0 overflow-hidden border-gray-200 dark:border-white/10 bg-white dark:bg-[#111] text-gray-900 dark:text-white shadow-2xl">
-          <div className="bg-gradient-to-br from-red-50 to-white dark:from-[#8B0000] dark:to-black p-8 text-center border-b border-gray-200 dark:border-[#D4AF37]/30">
-            <h2 className="text-3xl font-serif italic mb-2 text-[#8B0000] dark:text-[#D4AF37]">{authMode === "login" ? "Chào mừng trở lại" : "Tham gia triển lãm"}</h2>
-            <p className="text-gray-600 dark:text-gray-300 text-sm">{authMode === "login" ? "Đăng nhập để tiếp tục trải nghiệm" : "Tạo tài khoản để lưu trữ lịch sử"}</p>
-          </div>
-          <div className="p-8">
-            <form onSubmit={handleEmailAuth} className="space-y-4">
-              {authMode === "register" && (
-                <div className="space-y-1"><Input value={registerName} onChange={(e) => setRegisterName(e.target.value)} placeholder="Họ và tên" className="rounded-xl h-12 bg-gray-50 dark:bg-black border-gray-300 dark:border-white/20 text-gray-900 dark:text-white focus-visible:ring-[#8B0000]/30 dark:focus-visible:ring-[#D4AF37]/50" required /></div>
-              )}
-              <div className="space-y-1"><Input type="email" value={email} onChange={(e) => setEmail(e.target.value)} placeholder="Email" className="rounded-xl h-12 bg-gray-50 dark:bg-black border-gray-300 dark:border-white/20 text-gray-900 dark:text-white focus-visible:ring-[#8B0000]/30 dark:focus-visible:ring-[#D4AF37]/50" required /></div>
-              <div className="space-y-1"><Input type="password" value={password} onChange={(e) => setPassword(e.target.value)} placeholder="Mật khẩu" className="rounded-xl h-12 bg-gray-50 dark:bg-black border-gray-300 dark:border-white/20 text-gray-900 dark:text-white focus-visible:ring-[#8B0000]/30 dark:focus-visible:ring-[#D4AF37]/50" required /></div>
-              {authMode === "register" && (
-                <div className="space-y-1"><Input type="password" value={confirmPassword} onChange={(e) => setConfirmPassword(e.target.value)} placeholder="Xác nhận mật khẩu" className="rounded-xl h-12 bg-gray-50 dark:bg-black border-gray-300 dark:border-white/20 text-gray-900 dark:text-white focus-visible:ring-[#8B0000]/30 dark:focus-visible:ring-[#D4AF37]/50" required /></div>
-              )}
-              {authError && <p className="text-red-600 dark:text-red-400 text-xs font-medium bg-red-50 dark:bg-red-900/20 p-3 rounded-xl border border-red-200 dark:border-red-500/20">{authError}</p>}
-              <Button type="submit" disabled={isAuthSubmitting} className="w-full h-12 rounded-xl text-base font-bold bg-[#8B0000] dark:bg-[#D4AF37] text-white dark:text-black hover:bg-red-900 dark:hover:bg-[#b08d2b] transition-colors">
-                {isAuthSubmitting ? "Đang xử lý..." : authMode === "login" ? "Đăng nhập" : "Đăng ký"}
-              </Button>
-              {authMode === "login" && <button type="button" onClick={handleForgotPassword} className="w-full text-right text-xs font-medium text-[#8B0000] dark:text-[#D4AF37] hover:underline">Quên mật khẩu?</button>}
-            </form>
-            <div className="relative my-8">
-              <div className="absolute inset-0 flex items-center"><span className="w-full border-t border-gray-200 dark:border-white/10" /></div>
-              <div className="relative flex justify-center text-xs uppercase"><span className="bg-white dark:bg-[#111] px-4 text-gray-500 font-bold tracking-widest">Hoặc</span></div>
-            </div>
-            <Button variant="outline" onClick={handleGoogleLogin} disabled={isAuthSubmitting} className="w-full h-12 rounded-xl border-gray-300 dark:border-white/20 hover:bg-gray-50 dark:hover:bg-white/10 flex items-center justify-center gap-3 font-medium text-gray-700 dark:text-white">
-              <svg className="w-5 h-5" viewBox="0 0 24 24"><path fill="currentColor" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z" /><path fill="currentColor" d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z" /><path fill="currentColor" d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.22.81-.62z" /><path fill="currentColor" d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z" /></svg>
-              Tiếp tục với Google
-            </Button>
-            <p className="text-center mt-8 text-sm text-gray-500 dark:text-gray-400">
-              {authMode === "login" ? (<>Chưa có tài khoản? <button onClick={() => { setAuthMode("register"); setAuthError(""); }} className="text-[#8B0000] dark:text-[#D4AF37] font-bold hover:underline">Đăng ký ngay</button></>) : (<>Đã có tài khoản? <button onClick={() => { setAuthMode("login"); setAuthError(""); }} className="text-[#8B0000] dark:text-[#D4AF37] font-bold hover:underline">Đăng nhập</button></>)}
-            </p>
-          </div>
-        </DialogContent>
-      </Dialog>
     </div>
   );
 }
