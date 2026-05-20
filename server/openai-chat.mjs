@@ -2,7 +2,6 @@ import OpenAI from "openai";
 import { existsSync } from "node:fs";
 import { readdir, readFile } from "node:fs/promises";
 import path from "node:path";
-import { fileURLToPath } from "node:url";
 
 const DEFAULT_MODEL = "gpt-5.5";
 const DEFAULT_MAX_RESULTS = 6;
@@ -10,8 +9,7 @@ const DEFAULT_LOCAL_RAG_DIRS = ["knowledge-full", "knowledge"];
 const DEFAULT_LOCAL_RAG_MAX_CHUNKS = 4;
 const LOCAL_RAG_CHUNK_SIZE = 1800;
 const LOCAL_RAG_CHUNK_OVERLAP = 250;
-const __dirname = path.dirname(fileURLToPath(import.meta.url));
-const repoRoot = path.resolve(__dirname, "..");
+const repoRoot = path.resolve(process.cwd());
 
 let localKnowledgeCache = null;
 
@@ -89,8 +87,8 @@ function resolveLocalRagRoot(env, dirs) {
   const candidates = [
     env.OPENAI_LOCAL_RAG_ROOT && path.resolve(env.OPENAI_LOCAL_RAG_ROOT),
     repoRoot,
+    env.LAMBDA_TASK_ROOT && path.resolve(env.LAMBDA_TASK_ROOT),
     path.resolve(process.cwd()),
-    path.resolve(__dirname, "..", ".."),
   ].filter(Boolean);
 
   return candidates.find((candidate) => (
