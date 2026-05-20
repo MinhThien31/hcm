@@ -1,1080 +1,859 @@
-import { useState, useRef, useEffect, useMemo, Suspense } from "react";
-import { motion, AnimatePresence } from "motion/react";
-import { Toaster } from "sonner";
+import { FormEvent, useMemo, useRef, useState } from "react";
+import { AnimatePresence, motion } from "motion/react";
 import {
+  ArrowUpRight,
   BookOpen,
-  MessageSquare,
-  Send,
-  X,
-  ChevronRight,
-  Layers,
-  RefreshCw,
-  Zap,
-  ArrowRight,
-  Info,
-  Sun,
-  Moon,
+  Bot,
+  Brain,
+  CalendarDays,
+  CheckCircle2,
+  Compass,
   Flag,
-  Shield,
+  Globe2,
+  GraduationCap,
+  Handshake,
+  HeartHandshake,
   Landmark,
-  ArrowLeft,
-  ChevronUp
+  Layers3,
+  Lightbulb,
+  Map,
+  Menu,
+  MessageCircle,
+  Network,
+  Quote,
+  Send,
+  ShieldCheck,
+  Sparkles,
+  Target,
+  Users,
+  X,
 } from "lucide-react";
+import type { LucideIcon } from "lucide-react";
 import ReactMarkdown from "react-markdown";
 import remarkGfm from "remark-gfm";
-import { cn } from "@/lib/utils";
-import { Button } from "@/components/ui/button";
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
-import { Input } from "@/components/ui/input";
-import { ScrollArea } from "@/components/ui/scroll-area";
-import { Badge } from "@/components/ui/badge";
-import { Separator } from "@/components/ui/separator";
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { Html } from '@react-three/drei';
-import { CinematicReveal } from "./CinematicReveal"; 
-// import { FooterQuiz } from "@/components/footer-quiz";
-import { getChatResponse } from "./lib/gemini";
 import UnityGame from "./UnityGame";
-import { Footer } from "./Footer"; // Sửa lại đường dẫn nếu bạn để ở thư mục khác, VD: "./components/Footer"
-// ==========================================
-// R3F IMPORTS CHO LIBRARY 3D
-// ==========================================
-import { Canvas, useFrame } from '@react-three/fiber';
-import { Float, Text, useCursor, Sparkles, Image } from '@react-three/drei';
-import { EffectComposer, Bloom, Vignette, Noise } from '@react-three/postprocessing';
-import * as THREE from 'three';
+import { getChatResponse } from "./lib/gemini";
 
-// ==========================================
-// INTERFACES
-// ==========================================
-interface Message {
+type Message = {
   role: "user" | "model";
   text: string;
-  timestamp?: any;
-}
-
-const CHAT_MESSAGES_KEY = "thbc_messages_guest";
-
-const getDefaultWelcomeMessage = (): Message[] => ([
-  { role: "model", text: "Xin chào! Tôi là trợ lý ảo chuyên về Tư tưởng Hồ Chí Minh - Chương 5: Đại đoàn kết toàn dân tộc và đoàn kết quốc tế. Bạn muốn tìm hiểu về nội dung nào hôm nay?" }
-]);
-
-const loadLocalMessages = (): Message[] => {
-  if (typeof window === "undefined") return getDefaultWelcomeMessage();
-  try {
-    const raw = localStorage.getItem(CHAT_MESSAGES_KEY);
-    const saved = raw ? JSON.parse(raw) : [];
-    return Array.isArray(saved) && saved.length > 0 ? saved : getDefaultWelcomeMessage();
-  } catch {
-    return getDefaultWelcomeMessage();
-  }
 };
 
-const saveLocalMessages = (nextMessages: Message[]) => {
-  if (typeof window !== "undefined") {
-    localStorage.setItem(CHAT_MESSAGES_KEY, JSON.stringify(nextMessages));
-  }
-};
-
-interface Law {
-  id: string;
+type TheoryModule = {
   title: string;
-  shortTitle: string;
-  subtitle: string;
-  icon: React.ReactNode;
-  content: string;
-  example: string
-  imagePrompt: string;
-  imageUrl?: string;
-}
-
-interface Category {
-  id: string;
-  title: string;
-  definition: string;
-  detailedDefinition: string;
-  relationship: string;
-  meaning: string;
-  example: string;
-  icon: React.ReactNode;
-}
-
-const FEATURE_IMAGES = {
-  hero: "https://images.unsplash.com/photo-1516979187457-637abb4f9353?auto=format&fit=crop&w=1400&q=80",
-  overview: "https://images.unsplash.com/photo-1524995997946-a1c2e315a42f?auto=format&fit=crop&w=1200&q=80",
+  eyebrow: string;
+  icon: LucideIcon;
+  image: string;
+  thesis: string;
+  remember: string;
+  bullets: string[];
 };
 
-// ==========================================
-// THÀNH PHẦN DÙNG CHUNG (2D & 3D)
-// ==========================================
-const PhilosophicalParticles = ({ density = 20, className = "" }: { density?: number; className?: string }) => {
-  const particles = useMemo(() => {
-    return Array.from({ length: density }).map(() => ({
-      xInit: `${Math.random() * 100}%`,
-      yInit: `${Math.random() * 100}%`,
-      scaleInit: Math.random() * 0.5 + 0.5,
-      xAnim: `${Math.random() * 10 - 5}%`,
-      opacityMax: Math.random() * 0.4 + 0.2,
-      duration: Math.random() * 5 + 5,
-      delay: Math.random() * 3,
-    }));
-  }, [density]);
+type ArgumentCard = {
+  title: string;
+  icon: LucideIcon;
+  argument: string;
+  explain: string;
+  keywords: string[];
+};
 
+const navItems = [
+  { href: "#tong-quan", label: "Tổng quan" },
+  { href: "#hoc-ly-thuyet", label: "Học lý thuyết" },
+  { href: "#luan-diem", label: "Luận điểm" },
+  { href: "#moc-nho", label: "Mốc nhớ" },
+  { href: "#game", label: "Game" },
+];
+
+const images = {
+  hero:
+    "https://commons.wikimedia.org/wiki/Special:FilePath/Ho-chi-Minh%20with%20children%20%282%29.jpg",
+  portrait:
+    "https://commons.wikimedia.org/wiki/Special:FilePath/Ho%20Chi%20Minh%20-%201946%20Portrait.jpg",
+  people:
+    "https://commons.wikimedia.org/wiki/Special:FilePath/Saigonese%20laborers.jpg",
+  front:
+    "https://commons.wikimedia.org/wiki/Special:FilePath/The%20Politburo%20Member%20and%20President%2C%20Vietnam%20Fatherland%20Front%2C%20Mr.%20Nguyen%20Thein%20Nhan%20meeting%20the%20Vice%20President%2C%20Shri%20Mohd.%20Hamid%20Ansari%2C%20in%20New%20Delhi%20on%20March%2020%2C%202015.jpg",
+  international:
+    "https://commons.wikimedia.org/wiki/Special:FilePath/Ho%20Chi%20Minh%20with%20Vietnamese%20expats%20in%20France%2C%201946.jpg",
+};
+
+const overviewCards = [
+  {
+    label: "Chủ đề",
+    value: "Đại đoàn kết",
+    text: "Tư tưởng Hồ Chí Minh về đoàn kết toàn dân tộc và đoàn kết quốc tế.",
+  },
+  {
+    label: "Mạch học",
+    value: "Từ dân tộc đến thế giới",
+    text: "Bắt đầu từ sức mạnh nhân dân, đi tới Mặt trận, rồi mở rộng ra quốc tế.",
+  },
+  {
+    label: "Câu chốt",
+    value: "Dân là gốc",
+    text: "Tin dân, trọng dân, dựa vào dân là nền tảng để quy tụ mọi lực lượng.",
+  },
+  {
+    label: "Mục tiêu",
+    value: "Phụng sự Tổ quốc",
+    text: "Đoàn kết để giành và giữ độc lập, xây dựng cuộc sống tự do, hạnh phúc.",
+  },
+];
+
+const theoryModules: TheoryModule[] = [
+  {
+    title: "Đại đoàn kết toàn dân tộc",
+    eyebrow: "Học lý thuyết 01",
+    icon: Users,
+    image: images.people,
+    thesis:
+      "Đại đoàn kết toàn dân tộc là vấn đề có ý nghĩa chiến lược, quyết định thành công của cách mạng Việt Nam. Đây không phải một khẩu hiệu cảm tính mà là phương pháp tổ chức sức mạnh nhân dân.",
+    remember:
+      "Nhớ nhanh: đoàn kết là chiến lược lâu dài, không phải sách lược nhất thời.",
+    bullets: [
+      "Chủ thể đoàn kết là toàn thể nhân dân Việt Nam yêu nước.",
+      "Nền tảng là liên minh công nhân - nông dân - trí thức.",
+      "Điểm quy tụ là lợi ích tối cao của dân tộc và quyền lợi căn bản của nhân dân.",
+      "Muốn đoàn kết bền vững phải khoan dung, tin dân, tôn trọng khác biệt chính đáng.",
+    ],
+  },
+  {
+    title: "Mặt trận dân tộc thống nhất",
+    eyebrow: "Học lý thuyết 02",
+    icon: Landmark,
+    image: images.front,
+    thesis:
+      "Khối đại đoàn kết chỉ trở thành sức mạnh vật chất khi được tổ chức thành Mặt trận dân tộc thống nhất. Mặt trận là nơi tập hợp, hiệp thương và phối hợp hành động của các lực lượng yêu nước.",
+    remember:
+      "Nhớ nhanh: có đoàn kết phải có tổ chức; có tổ chức phải có dân chủ.",
+    bullets: [
+      "Mặt trận quy tụ các giai cấp, tầng lớp, dân tộc, tôn giáo, cá nhân yêu nước.",
+      "Nguyên tắc hoạt động cốt lõi là hiệp thương dân chủ.",
+      "Mặt trận đặt dưới sự lãnh đạo của Đảng nhưng phải gần dân, nghe dân, làm cho dân tin.",
+      "Đoàn kết trong Mặt trận là đoàn kết vì mục tiêu chung, không cào bằng mọi khác biệt.",
+    ],
+  },
+  {
+    title: "Đoàn kết quốc tế",
+    eyebrow: "Học lý thuyết 03",
+    icon: Globe2,
+    image: images.international,
+    thesis:
+      "Đoàn kết quốc tế nhằm kết hợp sức mạnh dân tộc với sức mạnh thời đại. Theo Hồ Chí Minh, Việt Nam phải tranh thủ sự ủng hộ của các lực lượng tiến bộ nhưng luôn giữ vững độc lập, tự chủ.",
+    remember:
+      "Nhớ nhanh: mở rộng hợp tác quốc tế nhưng không đánh mất bản lĩnh dân tộc.",
+    bullets: [
+      "Đoàn kết với phong trào cộng sản và công nhân quốc tế.",
+      "Gắn bó với phong trào đấu tranh giải phóng dân tộc.",
+      "Hợp tác với các lực lượng hòa bình, dân chủ, tiến bộ trên thế giới.",
+      "Nguyên tắc là độc lập tự chủ, bình đẳng, tôn trọng lẫn nhau và cùng có lợi.",
+    ],
+  },
+];
+
+const argumentCards: ArgumentCard[] = [
+  {
+    title: "Đoàn kết là chiến lược",
+    icon: Target,
+    argument:
+      "Hồ Chí Minh xem đại đoàn kết là đường lối chiến lược quyết định thắng lợi của cách mạng.",
+    explain:
+      "Bởi cách mạng là sự nghiệp của quần chúng. Khi nhân dân không được tập hợp, mọi đường lối đúng cũng khó biến thành sức mạnh hiện thực.",
+    keywords: ["chiến lược", "quần chúng", "thắng lợi"],
+  },
+  {
+    title: "Đoàn kết là mục tiêu, nhiệm vụ hàng đầu",
+    icon: Flag,
+    argument:
+      "Đảng phải đặt nhiệm vụ đoàn kết toàn dân ở vị trí trung tâm trong mọi giai đoạn cách mạng.",
+    explain:
+      "Đoàn kết vừa là điều kiện để giành thắng lợi, vừa là mục tiêu vì cuối cùng cách mạng hướng tới hạnh phúc của nhân dân.",
+    keywords: ["mục tiêu", "nhiệm vụ", "nhân dân"],
+  },
+  {
+    title: "Nền tảng là công - nông - trí thức",
+    icon: Layers3,
+    argument:
+      "Liên minh công nhân, nông dân và trí thức là nền gốc để mở rộng khối đại đoàn kết.",
+    explain:
+      "Nền tảng vững thì khối đoàn kết mới có sức chịu đựng, có tổ chức và có khả năng lan tỏa tới các tầng lớp khác.",
+    keywords: ["nền tảng", "liên minh", "mở rộng"],
+  },
+  {
+    title: "Đoàn kết phải có tổ chức",
+    icon: Network,
+    argument:
+      "Mặt trận dân tộc thống nhất là hình thức tổ chức của khối đại đoàn kết toàn dân.",
+    explain:
+      "Tình cảm đoàn kết cần được chuyển thành cơ chế hiệp thương, chương trình hành động và sự phối hợp cụ thể.",
+    keywords: ["Mặt trận", "hiệp thương", "hành động"],
+  },
+  {
+    title: "Đoàn kết quốc tế gắn với tự chủ",
+    icon: ShieldCheck,
+    argument:
+      "Hợp tác với thế giới phải đi cùng độc lập tự chủ, tự lực tự cường.",
+    explain:
+      "Đoàn kết quốc tế không phải phụ thuộc. Đó là cách kết nối chính nghĩa Việt Nam với những lực lượng tiến bộ của thời đại.",
+    keywords: ["quốc tế", "tự chủ", "thời đại"],
+  },
+];
+
+const memoryMarks = [
+  {
+    mark: "1 câu",
+    title: "Khẩu hiệu kinh điển",
+    text: "Đoàn kết, đoàn kết, đại đoàn kết. Thành công, thành công, đại thành công.",
+  },
+  {
+    mark: "2 phạm vi",
+    title: "Trong nước và quốc tế",
+    text: "Đại đoàn kết toàn dân tộc là gốc; đoàn kết quốc tế là phần mở rộng để kết hợp sức mạnh thời đại.",
+  },
+  {
+    mark: "3 lực lượng nền tảng",
+    title: "Công - nông - trí thức",
+    text: "Đây là nền gốc của khối đại đoàn kết toàn dân tộc.",
+  },
+  {
+    mark: "4 điều kiện",
+    title: "Muốn đoàn kết bền vững",
+    text: "Yêu nước, lợi ích chung, khoan dung, tin dân và dựa vào dân.",
+  },
+  {
+    mark: "5 từ khóa",
+    title: "Ôn trước khi kiểm tra",
+    text: "Chiến lược, Mặt trận, hiệp thương dân chủ, độc lập tự chủ, sức mạnh thời đại.",
+  },
+];
+
+const forces = [
+  { label: "Công nhân", tone: "bg-[#D64933]", note: "Lực lượng nền tảng" },
+  { label: "Nông dân", tone: "bg-[#3E8E6C]", note: "Đại đa số nhân dân" },
+  { label: "Trí thức", tone: "bg-[#E7B10A]", note: "Sức mạnh tri thức" },
+  { label: "Thanh niên", tone: "bg-[#277DA1]", note: "Chủ nhân tương lai" },
+  { label: "Phụ nữ", tone: "bg-[#A23E72]", note: "Một nửa xã hội" },
+  { label: "Tôn giáo", tone: "bg-[#6D597A]", note: "Đồng bào cùng Tổ quốc" },
+  { label: "Dân tộc thiểu số", tone: "bg-[#577590]", note: "Bình đẳng, đoàn kết" },
+  { label: "Kiều bào", tone: "bg-[#2A9D8F]", note: "Bộ phận của dân tộc" },
+];
+
+const suggestedQuestions = [
+  "Tóm tắt Chapter 5 thành 5 ý chính",
+  "Vì sao đại đoàn kết là vấn đề chiến lược?",
+  "Phân tích nguyên tắc hiệp thương dân chủ",
+  "So sánh đại đoàn kết toàn dân tộc và đoàn kết quốc tế",
+];
+
+const initialMessages: Message[] = [
+  {
+    role: "model",
+    text: "Chào bạn. Mình có thể giúp bạn học Chapter 5 theo kiểu: tóm tắt, phân tích luận điểm, lập dàn ý hoặc luyện câu hỏi.",
+  },
+];
+
+function SectionHeading({
+  eyebrow,
+  title,
+  align = "left",
+}: {
+  eyebrow: string;
+  title: string;
+  align?: "left" | "center";
+}) {
   return (
-    <div className={`absolute inset-0 overflow-hidden pointer-events-none ${className}`}>
-      {particles.map((p, i) => (
-        <motion.div
-          key={i}
-          className="absolute w-1.5 h-1.5 bg-primary/30 dark:bg-primary/50 rounded-full blur-[1px]"
-          initial={{ x: p.xInit, y: p.yInit, opacity: 0, scale: p.scaleInit }}
-          animate={{ y: ["0%", "15%", "-15%", "0%"], x: ["0%", p.xAnim, "0%"], opacity: [0, p.opacityMax, 0], scale: [0.8, 1.2, 0.8] }}
-          transition={{ duration: p.duration, repeat: Infinity, ease: "easeInOut", delay: p.delay }}
-        />
-      ))}
+    <div className={align === "center" ? "mx-auto mb-12 max-w-3xl text-center" : "mb-12 max-w-3xl"}>
+      <p className="mb-3 text-sm font-black uppercase tracking-[0.2em] text-[#D64933]">
+        {eyebrow}
+      </p>
+      <h2 className="text-4xl font-black tracking-tight md:text-6xl">
+        {title}
+      </h2>
     </div>
   );
-};
-
-// ==========================================
-// 3D LIBRARY COMPONENTS
-// ==========================================
-type SceneState = 'intro' | 'hub' | 'room1' | 'room2' | 'room3';
-
-const ARTIFACTS_ROOM1 = [
-  {
-    id: 'gear',
-    name: 'Chiến Lược Đoàn Kết',
-    desc: 'Đại đoàn kết toàn dân tộc là vấn đề có ý nghĩa chiến lược, quyết định thành công của cách mạng.\n\nHồ Chí Minh chỉ rõ: "Sử dạy cho ta bài học này: Lúc nào dân ta đoàn kết muôn người như một thì nước ta độc lập, tự do. Trái lại lúc nào dân ta không đoàn kết thì bị nước ngoài xâm lấn."\n\nĐại đoàn kết toàn dân tộc là chiến lược lâu dài, nhất quán, được duy trì cả trong cách mạng dân tộc dân chủ nhân dân và cách mạng xã hội chủ nghĩa.\n\n"Đoàn kết, đoàn kết, đại đoàn kết. Thành công, thành công, đại thành công."',
-    position: [-2, 0, 0] as [number, number, number],
-    color: '#D4AF37'
-  },
-  {
-    id: 'blueprint',
-    name: 'Mục Tiêu Hàng Đầu',
-    desc: 'Đại đoàn kết toàn dân tộc không chỉ là khẩu hiệu chiến lược mà còn là mục tiêu lâu dài của cách mạng.\n\nĐảng là lực lượng lãnh đạo cách mạng Việt Nam nên tất yếu đại đoàn kết toàn dân tộc phải được xác định là nhiệm vụ hàng đầu của Đảng.\n\nHồ Chí Minh tuyên bố: "Mục đích của Đảng Lao động Việt Nam có thể gồm trong 8 chữ là: ĐOÀN KẾT TOÀN DÂN, PHỤNG SỰ TỔ QUỐC."\n\nCách mạng là sự nghiệp của quần chúng, do quần chúng và vì quần chúng.',
-    position: [2, 0, 0] as [number, number, number],
-    color: '#8B0000'
-  }
-];
-
-const ARTIFACTS_ROOM2 = [
-  {
-    id: 'lotus',
-    name: 'Nền Tảng Đoàn Kết',
-    desc: 'Hồ Chí Minh chỉ rõ: "Đại đoàn kết tức là trước hết phải đoàn kết đại đa số nhân dân, mà đại đa số nhân dân là công nhân, nông dân và các tầng lớp nhân dân lao động khác. Đó là nền gốc của đại đoàn kết."\n\nLực lượng làm nền tảng cho khối đại đoàn kết toàn dân tộc là công nhân, nông dân và trí thức.\n\nNền tảng này càng được củng cố vững chắc thì khối đại đoàn kết toàn dân tộc càng có thể mở rộng, không có thế lực nào có thể làm suy yếu.',
-    position: [-2, 0, 0] as [number, number, number],
-    color: '#00FFFF'
-  },
-  {
-    id: 'pillar',
-    name: 'Mặt Trận Thống Nhất',
-    desc: 'Khối đại đoàn kết toàn dân tộc chỉ trở thành lực lượng to lớn khi được tập hợp, tổ chức lại thành một khối vững chắc - đó là Mặt trận dân tộc thống nhất.\n\nMặt trận là nơi quy tụ mọi tổ chức và cá nhân yêu nước, hoạt động theo nguyên tắc hiệp thương dân chủ.\n\nNguyên tắc cốt lõi: Xây dựng trên nền tảng liên minh công nhân - nông dân - trí thức, đặt dưới sự lãnh đạo của Đảng.',
-    position: [2, 0, 0] as [number, number, number],
-    color: '#FFD700'
-  }
-];
-const ARTIFACTS_ROOM3 = [
-  {
-    id: 'core_star',
-    name: 'Sức Mạnh Dân Tộc',
-    desc: 'Sức mạnh dân tộc là sự tổng hợp của các yếu tố vật chất và tinh thần, trước hết là sức mạnh của chủ nghĩa yêu nước và ý thức tự lực, tự cường dân tộc.\n\nĐoàn kết quốc tế nhằm kết hợp sức mạnh dân tộc với sức mạnh thời đại, tạo sức mạnh tổng hợp cho cách mạng.\n\nHồ Chí Minh: "Tự lực cánh sinh, dựa vào sức mình là chính."',
-    color: '#ff2222',
-    type: 'core',
-    position: [0, 0, 0]
-  },
-  {
-    id: 'orbiter_eco',
-    name: 'Phong Trào Cộng Sản',
-    desc: 'Đoàn kết với phong trào cộng sản và công nhân quốc tế.\n\nHồ Chí Minh cho rằng sự đoàn kết giữa giai cấp công nhân quốc tế là sự bảo đảm vững chắc cho thắng lợi của chủ nghĩa cộng sản.\n\nTheo tinh thần "bốn phương vô sản đều là anh em", chỉ có sức mạnh đoàn kết mới chống lại được âm mưu của chủ nghĩa đế quốc thực dân.',
-    color: '#44aaff',
-    type: 'orbiter',
-    radius: 3.5,
-    speed: 0.5,
-    offset: 0,
-    position: [0, 0, 0]
-  },
-  {
-    id: 'orbiter_culture',
-    name: 'Giải Phóng Dân Tộc',
-    desc: 'Đoàn kết với phong trào đấu tranh giải phóng dân tộc trên thế giới.\n\nHồ Chí Minh đã sớm đề nghị Quốc tế Cộng sản về những biện pháp nhằm làm cho các dân tộc thuộc địa hiểu biết nhau hơn và đoàn kết lại.\n\nNgười tham gia sáng lập Hội Liên hiệp thuộc địa tại Pháp và Hội Liên hiệp các dân tộc bị áp bức tại Trung Quốc.',
-    color: '#aa44ff',
-    type: 'orbiter',
-    radius: 3.5,
-    speed: 0.5,
-    offset: (Math.PI * 2) / 3,
-    position: [0, 0, 0]
-  },
-  {
-    id: 'orbiter_world',
-    name: 'Hòa Bình Thế Giới',
-    desc: 'Đoàn kết với các lực lượng tiến bộ, những người yêu chuộng hòa bình, dân chủ, tự do và công lý trên toàn thế giới.\n\nHồ Chí Minh luôn giương cao ngọn cờ hòa bình, đấu tranh cho "một nền hòa bình chân chính xây trên công bình và lý tưởng dân chủ".\n\nChính sách đối ngoại: "Làm bạn với tất cả mọi nước dân chủ và không gây thù oán với một ai."',
-    color: '#44ffaa',
-    type: 'orbiter',
-    radius: 3.5,
-    speed: 0.5,
-    offset: (Math.PI * 4) / 3,
-    position: [0, 0, 0]
-  }
-];
-const CameraController = ({ scene, focusedArtifact }: { scene: SceneState, focusedArtifact: any }) => {
-  useFrame((state) => {
-    const t = 0.05;
-    if (scene === 'intro') {
-      state.camera.position.lerp(new THREE.Vector3(0, 0, 15), t);
-      state.camera.lookAt(0, 0, 0);
-    } else if (scene === 'hub') {
-      state.camera.position.lerp(new THREE.Vector3(0, 0, 10), t);
-      state.camera.lookAt(0, 0, 0);
-    } else if (scene === 'room1' || scene === 'room2' || scene === 'room3') {
-      if (focusedArtifact) {
-        // Lấy tọa độ động (dynamic) cho Phòng 3, tọa độ tĩnh cho Phòng 1, 2
-        const posX = focusedArtifact.dynamicPosition ? focusedArtifact.dynamicPosition.x : focusedArtifact.position[0];
-        const posY = focusedArtifact.dynamicPosition ? focusedArtifact.dynamicPosition.y : focusedArtifact.position[1];
-        const posZ = focusedArtifact.dynamicPosition ? focusedArtifact.dynamicPosition.z : focusedArtifact.position[2];
-
-        // Zoom out xa hơn một chút nếu là phòng 3 vì quy mô lớn
-        const zOffset = scene === 'room3' ? 4 : 3;
-        const target = new THREE.Vector3(posX, posY, posZ + zOffset);
-
-        state.camera.position.lerp(target, 0.08);
-        state.camera.lookAt(posX, posY, posZ);
-      } else {
-        // Góc nhìn default của Phòng 3 lùi ra xa và bay cao hơn một chút để ngắm quỹ đạo
-        const defaultTarget = scene === 'room3' ? new THREE.Vector3(0, 2, 12) : new THREE.Vector3(0, 0, 10);
-        state.camera.position.lerp(defaultTarget, t);
-        state.camera.lookAt(0, 0, 0);
-      }
-    }
-  });
-  return null;
-};
-// ==========================================
-// MŨI TÊN TƯƠNG TÁC (Ghim chặt vào nền ảnh 2D)
-// ==========================================
-const PortalArrow = ({ position, onClick, label, color }: any) => {
-  return (
-    <group position={position}>
-      {/* Thẻ Html transform giúp code HTML hòa nhập vào không gian 3D */}
-      <Html center transform zIndexRange={[100, 0]} scale={0.5}>
-        <div
-          onClick={onClick}
-          className="flex flex-col items-center justify-center cursor-pointer group"
-        >
-          {/* Mũi tên nảy lên nảy xuống */}
-          <div
-            className="animate-bounce transition-all duration-300 drop-shadow-2xl"
-            style={{ color: color, filter: `drop-shadow(0 0 10px ${color})` }}
-          >
-            <ChevronUp size={64} strokeWidth={3} />
-          </div>
-
-          {/* Nút bấm hiện ra khi Hover */}
-          <div
-            className="mt-2 px-6 py-3 rounded-full border bg-black/60 backdrop-blur-md text-white font-bold tracking-widest uppercase transition-all duration-300 opacity-0 group-hover:opacity-100 scale-90 group-hover:scale-100 whitespace-nowrap"
-            style={{ borderColor: color, boxShadow: `0 0 20px ${color}40` }}
-          >
-            {label}
-          </div>
-        </div>
-      </Html>
-    </group>
-  );
-};
-// ==========================================
-// HITBOX VÔ HÌNH (Đè lên ảnh 2D để tạo tương tác)
-// ==========================================
-const Artifact = ({ data, onFocus }: { data: any, onFocus: (d: any) => void }) => {
-  const [hovered, setHover] = useState(false);
-  useCursor(hovered);
-  const ref = useRef<THREE.Mesh>(null);
-  const innerRef = useRef<THREE.Mesh>(null);
-
-  useFrame(() => {
-    if (ref.current) {
-      ref.current.rotation.y += 0.01;
-      ref.current.rotation.x += 0.005;
-    }
-    if (innerRef.current) {
-      innerRef.current.rotation.y -= 0.015;
-
-      // Thêm hiệu ứng xoay đặc biệt cho vòng nhẫn của pillar
-      if (data.id === 'pillar') {
-        innerRef.current.rotation.x += 0.02;
-        innerRef.current.rotation.z -= 0.01;
-      }
-    }
-  });
-
-  return (
-    <group position={data.position}>
-      <Float speed={3} rotationIntensity={0.5} floatIntensity={0.5}>
-        <mesh
-          ref={ref as any}
-          onClick={(e) => { e.stopPropagation(); onFocus(data); }}
-          onPointerOver={() => setHover(true)}
-          onPointerOut={() => setHover(false)}
-        >
-          {/* Lôgic Render Mô hình tùy theo ID */}
-          {data.id === 'gear' ? (
-            <torusGeometry args={[0.8, 0.2, 16, 100]} />
-          ) : data.id === 'blueprint' ? (
-            <icosahedronGeometry args={[0.9, 1]} />
-          ) : data.id === 'lotus' ? (
-            <octahedronGeometry args={[0.8, 0]} />
-          ) : data.id === 'pillar' ? (
-            <cylinderGeometry args={[0.4, 0.6, 1.8, 32]} />
-          ) : null}
-
-          <meshStandardMaterial
-            color="#fff"
-            emissive={data.color}
-            emissiveIntensity={hovered ? 2 : 0.8}
-            wireframe={data.id === 'blueprint' || data.id === 'pillar'}
-            transparent
-            opacity={0.9}
-          />
-        </mesh>
-
-        {/* Lõi phát sáng / Hiệu ứng bên trong */}
-        {data.id === 'blueprint' && (
-          <mesh ref={innerRef as any}>
-            <icosahedronGeometry args={[0.5, 0]} />
-            <meshBasicMaterial color={data.color} wireframe />
-          </mesh>
-        )}
-        {data.id === 'lotus' && (
-          <mesh ref={innerRef as any}>
-            <octahedronGeometry args={[0.4, 0]} />
-            <meshBasicMaterial color="#ffffff" wireframe />
-          </mesh>
-        )}
-        {data.id === 'pillar' && (
-          <mesh ref={innerRef as any}>
-            <torusGeometry args={[1, 0.02, 32, 100]} />
-            <meshBasicMaterial color={data.color} />
-          </mesh>
-        )}
-      </Float>
-
-      <Text position={[0, -2.2, 0]} fontSize={0.2} color="white" fillOpacity={hovered ? 1 : 0.5}>
-        {data.name}
-      </Text>
-    </group>
-  );
-};
-// ==========================================
-// CƠ CHẾ QUỸ ĐẠO PHÒNG 3 (ORBITAL MECHANISM)
-// ==========================================
-const OrbitalArtifact = ({ data, onFocus, isPaused }: { data: any, onFocus: (d: any) => void, isPaused: boolean }) => {
-  const [hovered, setHover] = useState(false);
-  useCursor(hovered);
-  const groupRef = useRef<THREE.Group>(null);
-  const meshRef = useRef<THREE.Mesh>(null);
-  const ringRef = useRef<THREE.Mesh>(null);
-
-  // Ref để lưu trữ thời gian tích lũy độc lập (Để Pause được)
-  const timeRef = useRef(0);
-
-  useFrame((state, delta) => {
-    // Nếu có hiện vật đang được focus, dừng thời gian bay quỹ đạo
-    if (!isPaused) {
-      timeRef.current += delta;
-    }
-
-    if (data.type === 'core') {
-      // Hiệu ứng Lõi: Đập nhịp (Pulsating)
-      const scale = 1 + Math.sin(timeRef.current * 3) * 0.08;
-      if (groupRef.current) groupRef.current.scale.set(scale, scale, scale);
-      if (meshRef.current) meshRef.current.rotation.y += 0.005;
-      if (ringRef.current) {
-        ringRef.current.rotation.x += 0.01;
-        ringRef.current.rotation.y += 0.02;
-      }
-    } else {
-      // Hiệu ứng Vệ tinh: Bay quanh quỹ đạo + Nhấp nhô
-      const angle = timeRef.current * data.speed + data.offset;
-      const x = Math.cos(angle) * data.radius;
-      const z = Math.sin(angle) * data.radius;
-      const y = Math.sin(timeRef.current * 1.5 + data.offset) * 0.4;
-
-      if (groupRef.current) groupRef.current.position.set(x, y, z);
-      if (meshRef.current) {
-        meshRef.current.rotation.x += 0.02;
-        meshRef.current.rotation.y += 0.02;
-      }
-      if (ringRef.current) {
-        ringRef.current.rotation.x -= 0.03;
-      }
-    }
-  });
-
-  const handleClick = (e: any) => {
-    e.stopPropagation();
-    // Bắt lấy tọa độ không gian thực ngay tại khoảnh khắc bị Click để Camera bay tới
-    const worldPos = new THREE.Vector3();
-    if (groupRef.current) {
-      groupRef.current.getWorldPosition(worldPos);
-      onFocus({ ...data, dynamicPosition: worldPos });
-    }
-  };
-
-  return (
-    <group ref={groupRef} position={data.type === 'core' ? [0, 0, 0] : [data.radius, 0, 0]}>
-      <mesh
-        ref={meshRef as any}
-        onClick={handleClick}
-        onPointerOver={() => setHover(true)}
-        onPointerOut={() => setHover(false)}
-      >
-        {/* Hình khối thay đổi dựa trên type */}
-        {data.type === 'core' ? (
-          <dodecahedronGeometry args={[1.2, 0]} />
-        ) : (
-          <sphereGeometry args={[0.5, 32, 32]} />
-        )}
-        <meshStandardMaterial
-          color="#fff"
-          emissive={data.color}
-          emissiveIntensity={hovered ? 3 : 1.2}
-          transparent
-          opacity={data.type === 'core' ? 0.7 : 0.9}
-          wireframe={data.type === 'core'}
-        />
-      </mesh>
-
-      {/* Lõi đặc bên trong Core */}
-      {data.type === 'core' && (
-        <mesh ref={ringRef as any}>
-          <icosahedronGeometry args={[0.8, 0]} />
-          <meshStandardMaterial color={data.color} emissive={data.color} emissiveIntensity={1} />
-        </mesh>
-      )}
-
-      {/* Vòng nhẫn bao quanh Vệ Tinh */}
-      {data.type === 'orbiter' && (
-        <mesh ref={ringRef as any} rotation={[Math.PI / 2, 0, 0]}>
-          <torusGeometry args={[0.9, 0.02, 16, 50]} />
-          <meshBasicMaterial color={data.color} />
-        </mesh>
-      )}
-
-      <Text position={[0, data.type === 'core' ? -2.2 : -1.5, 0]} fontSize={0.25} color="white" fillOpacity={hovered ? 1 : 0.5}>
-        {data.name}
-      </Text>
-    </group>
-  );
 }
-const InteractiveLibrary = () => {
-  const [scene, setScene] = useState<SceneState>('intro');
-  const [focusedArtifact, setFocusedArtifact] = useState<any>(null);
 
-  return (
-    <div className="w-full h-full bg-[#050505] text-white overflow-hidden font-sans select-none relative rounded-b-[2rem]">
-
-      {/* INTRO SCREEN */}
-      <AnimatePresence>
-        {scene === 'intro' && (
-          <motion.div
-            className="absolute inset-0 z-50 flex flex-col items-center justify-center bg-black/60 backdrop-blur-md"
-            exit={{ opacity: 0, scale: 1.1, filter: "blur(10px)" }}
-            transition={{ duration: 1.5, ease: "easeInOut" }}
-          >
-            <motion.p initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.5, duration: 2 }} className="text-gray-300 uppercase tracking-[0.5em] text-xs md:text-sm mb-6 font-medium">
-              Đoàn kết là sức mạnh vô địch
-            </motion.p>
-            <motion.h1 initial={{ opacity: 0, scale: 0.9 }} animate={{ opacity: 1, scale: 1 }} transition={{ delay: 1.5, duration: 2 }} className="text-4xl md:text-6xl lg:text-7xl font-serif text-[#D4AF37] mb-12 text-center leading-tight drop-shadow-[0_0_30px_rgba(212,175,55,0.6)]">
-              Bảo Tàng Tri Thức<br />Đại Đoàn Kết Dân Tộc
-            </motion.h1>
-            <motion.button initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 3, duration: 1 }} whileHover={{ scale: 1.05, boxShadow: "0 0 30px rgba(139,0,0,0.8)" }} onClick={() => setScene('hub')} className="px-8 py-4 bg-gradient-to-r from-[#8B0000] to-red-950 border border-[#D4AF37]/50 uppercase tracking-widest text-sm font-bold flex items-center gap-3 backdrop-blur-md rounded-full text-white shadow-2xl">
-              Bước vào không gian <ChevronRight className="w-5 h-5" />
-            </motion.button>
-          </motion.div>
-        )}
-      </AnimatePresence>
-
-      {/* HOLOGRAM PANEL (Phòng 1) */}
-      <AnimatePresence>
-        {focusedArtifact && (
-          <motion.div initial={{ opacity: 0, x: 100 }} animate={{ opacity: 1, x: 0 }} exit={{ opacity: 0, x: 50 }} className="absolute right-8 top-1/4 w-[400px] z-40 bg-black/60 backdrop-blur-2xl border-l-4 border-y border-r border-white/10 p-8 rounded-r-2xl shadow-[0_0_50px_rgba(0,0,0,0.8)]" style={{ borderLeftColor: focusedArtifact.color }}>
-            <button onClick={() => setFocusedArtifact(null)} className="absolute top-4 right-4 text-gray-400 hover:text-white transition-colors">
-              <X className="w-6 h-6" />
-            </button>
-            <div className="flex items-center gap-3 mb-6">
-              <div className="w-3 h-3 rounded-full animate-pulse" style={{ backgroundColor: focusedArtifact.color }}></div>
-              <p className="text-xs uppercase tracking-[0.2em] text-gray-400 font-bold">Hồ sơ hiện vật</p>
-            </div>
-            <h3 className="text-3xl font-serif font-bold mb-6 text-white leading-tight">{focusedArtifact.name}</h3>
-            {/* Thêm max-h và overflow-y-auto để cuộn mượt mà */}
-            <div className="prose prose-invert max-h-[45vh] overflow-y-auto custom-scrollbar pr-4">
-              <p className="text-gray-300 leading-relaxed whitespace-pre-line text-[15px] md:text-base font-light text-justify">
-                {focusedArtifact.desc}
-              </p>
-            </div>          </motion.div>
-        )}
-      </AnimatePresence>
-
-      {/* NÚT BACK CHUYỂN CẢNH (Đã được làm nổi bật) */}
-      <AnimatePresence>
-        {(scene !== 'intro' && scene !== 'hub') && (
-          <motion.div
-            initial={{ opacity: 0, x: -20 }}
-            animate={{ opacity: 1, x: 0 }}
-            exit={{ opacity: 0, x: -20 }}
-            className="absolute top-8 left-8 z-50"
-          >
-            <button
-              onClick={() => { setFocusedArtifact(null); setScene('hub'); }}
-              className="group flex items-center gap-3 px-6 py-3 bg-black/60 backdrop-blur-xl border border-[#D4AF37]/50 rounded-full text-sm font-bold uppercase tracking-widest text-[#D4AF37] hover:bg-[#D4AF37] hover:text-black transition-all duration-300 shadow-[0_0_20px_rgba(212,175,55,0.2)]"
-            >
-              <ArrowLeft className="w-5 h-5 group-hover:-translate-x-1 transition-transform" />
-              Trở về Sảnh Chính
-            </button>
-          </motion.div>
-        )}
-      </AnimatePresence>
-
-      <Canvas shadows dpr={[1, 2]} gl={{ antialias: false }} camera={{ position: [0, 0, 10], fov: 45 }}>
-        <CameraController scene={scene} focusedArtifact={focusedArtifact} />
-
-        <color attach="background" args={['#020202']} />
-        <ambientLight intensity={1} />
-        <Sparkles count={150} scale={[30, 20, 10]} size={2} speed={0.2} opacity={0.3} color="#D4AF37" />
-
-        <Suspense fallback={null}>
-          {/* ẢNH BACKGROUND (Ép khung 16:9 để không bị cắt xén) */}
-          <Image
-            url="/images/HostRoom.png"
-            scale={[32, 18]} // Tỉ lệ 16:9 chuẩn
-            position={[0, 0, -5]}
-            transparent
-            opacity={scene === 'hub' ? 1 : 0.15} // Tối đi khi vào phòng
-            toneMapped={false}
-          />
-
-          {scene === 'hub' && (
-            <group position={[0, 0, -4.9]}>
-              <PortalArrow
-                position={[-4.9, -4.5, 0]}
-                color="#ff4444"
-                label="Vào Phòng 1"
-                onClick={() => setScene('room1')}
-              />
-
-              <PortalArrow
-                position={[0, -4.5, 0]}
-                color="#D4AF37"
-                label="Vào Phòng 2"
-                onClick={() => setScene('room2')} // Kích hoạt chuyển cảnh
-              />
-
-              <PortalArrow
-                position={[4.9, -4.5, 0]}
-                color="#44aaff"
-                label="Vào Phòng 3"
-                onClick={() => setScene('room3')} // Kích hoạt phòng 3 thay vì toast info
-              />
-            </group>
-          )}
-        </Suspense>
-
-        {/* Hiển thị Phòng 1 */}
-        {scene === 'room1' && (
-          <group>
-            {ARTIFACTS_ROOM1.map((art) => <Artifact key={art.id} data={art} onFocus={setFocusedArtifact} />)}
-            <gridHelper args={[100, 100, '#D4AF37', '#222']} position={[0, -2, 0]} />
-          </group>
-        )}
-
-        {/* Hiển thị Phòng 2 */}
-        {scene === 'room2' && (
-          <group>
-            {ARTIFACTS_ROOM2.map((art) => <Artifact key={art.id} data={art} onFocus={setFocusedArtifact} />)}
-            <gridHelper args={[100, 100, '#00FFFF', '#113333']} position={[0, -2, 0]} />
-          </group>
-        )}
-        {/* =======================
-            RENDER PHÒNG 3 
-        ======================== */}
-        {scene === 'room3' && (
-          <group position={[0, -0.5, 0]}>
-            {/* Lưới ảo đặc trưng cho không gian Vũ trụ mạng */}
-            <gridHelper args={[100, 100, '#44ffaa', '#052211']} position={[0, -3, 0]} />
-
-            {/* Vòng chỉ dẫn quỹ đạo ảo */}
-            <mesh rotation={[Math.PI/2, 0, 0]} position={[0, 0, 0]}>
-               <torusGeometry args={[3.5, 0.01, 16, 100]} />
-               <meshBasicMaterial color="#ffffff" transparent opacity={0.15} />
-            </mesh>
-
-            {/* Khởi tạo hệ thống Vệ tinh */}
-            {ARTIFACTS_ROOM3.map((art) => (
-              <OrbitalArtifact 
-                key={art.id} 
-                data={art} 
-                onFocus={setFocusedArtifact} 
-                isPaused={!!focusedArtifact} // Truyền cờ Pause khi có object đang xem
-              />
-            ))}
-          </group>
-        )}
-
-        <EffectComposer>
-          <Bloom luminanceThreshold={0.5} mipmapBlur intensity={0.5} radius={0.8} />
-          <Noise opacity={0.03} />
-          <Vignette eskil={false} offset={0.1} darkness={1.1} />
-        </EffectComposer>
-      </Canvas>
-    </div>
-  );
-};
-
-// ==========================================
-// MAIN APP COMPONENT (2D & Logic)
-// ==========================================
-// ==========================================
-// MAIN APP COMPONENT (2D & Logic) - ĐÃ CẬP NHẬT LIGHT/DARK MODE
-// ==========================================
-export default function App() {
-  const [activeTab, setActiveTab] = useState<'main' | 'library'>('main');
+function App() {
+  const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [isChatOpen, setIsChatOpen] = useState(false);
-  const [messages, setMessages] = useState<Message[]>(() => loadLocalMessages());
+  const [messages, setMessages] = useState<Message[]>(initialMessages);
   const [inputValue, setInputValue] = useState("");
   const [isLoading, setIsLoading] = useState(false);
-  const [theme, setTheme] = useState<"light" | "dark">(() => {
-    if (typeof window !== "undefined") {
-      return (localStorage.getItem("theme") as "light" | "dark") || "light";
-    }
-    return "light";
-  });
-  const [selectedCategory, setSelectedCategory] = useState<Category | null>(null);
-  const experienceUrl = typeof window !== "undefined" ? window.location.href : "https://example.com";
-  const qrCodeUrl = `..\\public\\images\\1. QUY LUẬT LƯỢNG - CHẤT...png`; // Rút gọn để hiển thị
+  const gameRef = useRef<HTMLDivElement | null>(null);
 
-  const messagesEndRef = useRef<HTMLDivElement>(null);
+  const chatHistory = useMemo(
+    () =>
+      messages.map((message) => ({
+        role: message.role,
+        parts: [{ text: message.text }],
+      })),
+    [messages],
+  );
 
-  useEffect(() => {
-    const root = window.document.documentElement;
-    if (theme === "dark") {
-      root.classList.add("dark");
-    } else {
-      root.classList.remove("dark");
-    }
-    localStorage.setItem("theme", theme);
-  }, [theme]);
+  const handleSend = async (text = inputValue) => {
+    const cleanText = text.trim();
+    if (!cleanText || isLoading) return;
 
-  const toggleTheme = () => {
-    setTheme(prev => prev === "light" ? "dark" : "light");
-  };
+    const nextMessages: Message[] = [
+      ...messages,
+      { role: "user", text: cleanText },
+    ];
 
-  useEffect(() => {
-    if (isChatOpen) {
-      messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
-    }
-  }, [messages, isChatOpen]);
-
-  const scrollToBottom = () => messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
-  useEffect(() => { scrollToBottom(); }, [messages]);
-
-  const appendLocalMessage = (message: Message) => {
-    setMessages(prev => {
-      const next = [...prev, message];
-      saveLocalMessages(next);
-      return next;
-    });
-  };
-
-  const handleSendMessage = async () => {
-    if (!inputValue.trim() || isLoading) return;
-    const userMessage = inputValue.trim();
-    const newMessage: Message = { role: "user", text: userMessage };
+    setMessages(nextMessages);
     setInputValue("");
     setIsLoading(true);
-    appendLocalMessage(newMessage);
-    const history = [...messages, newMessage].map(m => ({ role: m.role, parts: [{ text: m.text }] }));
+
     try {
-      const response = await getChatResponse(userMessage, history);
-      appendLocalMessage({ role: "model", text: response || "Xin lỗi, tôi không thể trả lời lúc này." });
-    } catch (error) {
-      appendLocalMessage({ role: "model", text: "Xin lỗi, đã có lỗi xảy ra khi xử lý câu hỏi của bạn." });
+      const answer = await getChatResponse(cleanText, chatHistory);
+      setMessages([...nextMessages, { role: "model", text: answer }]);
+    } catch {
+      setMessages([
+        ...nextMessages,
+        {
+          role: "model",
+          text: "Mình chưa kết nối được hệ thống hỏi đáp. Bạn vẫn có thể học theo các mục Tổng quan, Học lý thuyết, Luận điểm, Mốc nhớ và Game trên trang.",
+        },
+      ]);
     } finally {
       setIsLoading(false);
     }
   };
 
-  return (
-    <div className="min-h-screen flex flex-col">
-      <Toaster position="top-right" richColors />
+  const handleSubmit = (event: FormEvent<HTMLFormElement>) => {
+    event.preventDefault();
+    void handleSend();
+  };
 
-      {/* ==========================================
-          GLOBAL NAVIGATION
-      ========================================== */}
-      <nav className="fixed top-0 z-50 w-full border-b border-gray-200 dark:border-white/10 bg-white/90 dark:bg-[#0A0A0A]/80 backdrop-blur-md supports-[backdrop-filter]:bg-white/60 dark:supports-[backdrop-filter]:bg-[#0A0A0A]/60 transition-colors duration-300">
-        <div className="container mx-auto px-4 h-20 flex items-center justify-between">
-          <div className="flex items-center gap-3">
-            <div className="p-2 bg-gradient-to-br from-[#8B0000] to-red-900 rounded-lg border border-[#D4AF37]/30">
-              <Landmark className="w-6 h-6 text-[#D4AF37]" />
-            </div>
-            <span className="text-xl md:text-2xl font-serif font-bold tracking-widest text-[#8B0000] dark:text-[#D4AF37] uppercase">
-              Triển Lãm Số
+  return (
+    <div className="min-h-screen bg-[#F7F2EA] text-[#1F2421] selection:bg-[#D64933] selection:text-white">
+      <header className="fixed inset-x-0 top-0 z-50 border-b border-black/10 bg-[#F7F2EA]/90 backdrop-blur-xl">
+        <div className="mx-auto flex h-16 max-w-7xl items-center justify-between px-4 md:px-8">
+          <a href="#" className="flex items-center gap-3 font-semibold">
+            <span className="grid h-10 w-10 place-items-center rounded-lg bg-[#1F2421] text-[#F7F2EA]">
+              <Handshake className="h-5 w-5" />
             </span>
+            <span className="leading-tight">
+              Chapter 5
+              <span className="block text-xs font-medium text-[#68736C]">
+                Đại đoàn kết
+              </span>
+            </span>
+          </a>
+
+          <nav className="hidden items-center gap-1 md:flex">
+            {navItems.map((item) => (
+              <a
+                key={item.href}
+                href={item.href}
+                className="rounded-lg px-3 py-2 text-sm font-semibold text-[#405047] transition hover:bg-black/5"
+              >
+                {item.label}
+              </a>
+            ))}
+          </nav>
+
+          <div className="flex items-center gap-2">
+            <button
+              type="button"
+              onClick={() => setIsChatOpen(true)}
+              className="inline-flex h-10 items-center gap-2 rounded-lg bg-[#D64933] px-4 text-sm font-semibold text-white shadow-sm transition hover:bg-[#B83A2A]"
+            >
+              <Bot className="h-4 w-4" />
+              <span className="hidden sm:inline">Hỏi AI</span>
+            </button>
+            <button
+              type="button"
+              onClick={() => setIsMenuOpen((value) => !value)}
+              className="grid h-10 w-10 place-items-center rounded-lg border border-black/10 bg-white/60 md:hidden"
+              aria-label="Mở menu"
+            >
+              {isMenuOpen ? <X className="h-5 w-5" /> : <Menu className="h-5 w-5" />}
+            </button>
+          </div>
+        </div>
+
+        <AnimatePresence>
+          {isMenuOpen && (
+            <motion.div
+              initial={{ height: 0, opacity: 0 }}
+              animate={{ height: "auto", opacity: 1 }}
+              exit={{ height: 0, opacity: 0 }}
+              className="overflow-hidden border-t border-black/10 bg-[#F7F2EA] md:hidden"
+            >
+              <div className="grid gap-1 px-4 py-3">
+                {navItems.map((item) => (
+                  <a
+                    key={item.href}
+                    href={item.href}
+                    onClick={() => setIsMenuOpen(false)}
+                    className="rounded-lg px-3 py-3 text-sm font-semibold text-[#405047] hover:bg-black/5"
+                  >
+                    {item.label}
+                  </a>
+                ))}
+              </div>
+            </motion.div>
+          )}
+        </AnimatePresence>
+      </header>
+
+      <main>
+        <section className="relative min-h-[92vh] overflow-hidden pt-16">
+          <img
+            src={images.hero}
+            alt="Hồ Chí Minh với thiếu nhi"
+            className="absolute inset-0 h-full w-full object-cover"
+          />
+          <div className="absolute inset-0 bg-[linear-gradient(90deg,rgba(31,36,33,0.96),rgba(31,36,33,0.72),rgba(31,36,33,0.16))]" />
+
+          <div className="relative mx-auto grid min-h-[calc(92vh-4rem)] max-w-7xl items-center gap-10 px-4 py-16 md:grid-cols-[1.08fr_0.92fr] md:px-8">
+            <motion.div
+              initial={{ opacity: 0, y: 24 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.7 }}
+              className="max-w-4xl text-white"
+            >
+              <div className="mb-6 inline-flex items-center gap-2 rounded-lg border border-white/20 bg-white/10 px-3 py-2 text-xs font-semibold uppercase tracking-[0.18em] text-[#F4D35E] backdrop-blur">
+                <Sparkles className="h-4 w-4" />
+                Tư tưởng Hồ Chí Minh
+              </div>
+              <h1 className="max-w-5xl text-5xl font-black leading-[0.96] tracking-tight md:text-7xl lg:text-8xl">
+                Chapter 5
+                <span className="block text-[#F4D35E]">
+                  Học chắc đại đoàn kết
+                </span>
+              </h1>
+              <p className="mt-6 max-w-2xl text-lg leading-8 text-white/86 md:text-xl">
+                Một trang học được thiết kế như bộ ôn thi trực quan: nắm tổng
+                quan, đọc lý thuyết, hiểu luận điểm, ghi mốc nhớ và luyện bằng
+                game tương tác.
+              </p>
+              <div className="mt-8 flex flex-wrap gap-3">
+                <a
+                  href="#hoc-ly-thuyet"
+                  className="inline-flex items-center gap-2 rounded-lg bg-[#F4D35E] px-5 py-3 text-sm font-bold text-[#1F2421] transition hover:bg-[#FFE16B]"
+                >
+                  Bắt đầu học lý thuyết
+                  <ArrowUpRight className="h-4 w-4" />
+                </a>
+                <button
+                  type="button"
+                  onClick={() => gameRef.current?.scrollIntoView({ behavior: "smooth" })}
+                  className="inline-flex items-center gap-2 rounded-lg border border-white/20 bg-white/10 px-5 py-3 text-sm font-bold text-white backdrop-blur transition hover:bg-white/18"
+                >
+                  Vào game ôn tập
+                  <Compass className="h-4 w-4" />
+                </button>
+              </div>
+            </motion.div>
+
+            <motion.div
+              initial={{ opacity: 0, scale: 0.96 }}
+              animate={{ opacity: 1, scale: 1 }}
+              transition={{ duration: 0.7, delay: 0.15 }}
+              className="hidden md:block"
+            >
+              <div className="ml-auto max-w-md rounded-lg border border-white/18 bg-[#F7F2EA]/94 p-5 shadow-2xl backdrop-blur">
+                <img
+                  src={images.portrait}
+                  alt="Chủ tịch Hồ Chí Minh"
+                  className="aspect-[4/5] w-full rounded-md object-cover"
+                />
+                <div className="mt-5 grid gap-3">
+                  <div className="flex items-start gap-3">
+                    <Quote className="mt-1 h-4 w-4 text-[#D64933]" />
+                    <p className="text-sm leading-6 text-[#405047]">
+                      “Đoàn kết, đoàn kết, đại đoàn kết. Thành công, thành
+                      công, đại thành công.”
+                    </p>
+                  </div>
+                  <div className="h-px bg-black/10" />
+                  <p className="text-xs font-semibold uppercase tracking-[0.18em] text-[#68736C]">
+                    Câu khóa để nhớ toàn bộ Chapter 5
+                  </p>
+                </div>
+              </div>
+            </motion.div>
+          </div>
+        </section>
+
+        <section id="tong-quan" className="py-20 md:py-28">
+          <div className="mx-auto max-w-7xl px-4 md:px-8">
+            <SectionHeading
+              eyebrow="Tổng quan"
+              title="Nắm chương trong 3 phút"
+            />
+
+            <div className="grid gap-4 md:grid-cols-4">
+              {overviewCards.map((card, index) => (
+                <motion.div
+                  key={card.label}
+                  initial={{ opacity: 0, y: 20 }}
+                  whileInView={{ opacity: 1, y: 0 }}
+                  viewport={{ once: true, margin: "-80px" }}
+                  transition={{ delay: index * 0.06 }}
+                  className="rounded-lg border border-black/10 bg-white p-5 shadow-sm"
+                >
+                  <p className="text-xs font-black uppercase tracking-[0.18em] text-[#D64933]">
+                    {card.label}
+                  </p>
+                  <h3 className="mt-3 text-2xl font-black leading-tight">{card.value}</h3>
+                  <p className="mt-3 text-sm leading-6 text-[#607069]">{card.text}</p>
+                </motion.div>
+              ))}
+            </div>
+
+            <div className="mt-8 rounded-lg bg-[#1F2421] p-6 text-white md:p-8">
+              <div className="grid gap-6 md:grid-cols-[0.8fr_1.2fr] md:items-center">
+                <div className="flex items-center gap-4">
+                  <span className="grid h-14 w-14 place-items-center rounded-lg bg-[#F4D35E] text-[#1F2421]">
+                    <Brain className="h-7 w-7" />
+                  </span>
+                  <div>
+                    <p className="text-sm font-black uppercase tracking-[0.18em] text-[#F4D35E]">
+                      Logic của chương
+                    </p>
+                    <h3 className="mt-1 text-2xl font-black">Dân tộc là gốc, quốc tế là sức mạnh bổ sung</h3>
+                  </div>
+                </div>
+                <p className="text-base leading-8 text-white/75">
+                  Học Chapter 5 nên đi theo mạch: đoàn kết trong nước tạo nền
+                  móng, Mặt trận biến đoàn kết thành tổ chức, đoàn kết quốc tế
+                  giúp kết hợp sức mạnh dân tộc với sức mạnh thời đại.
+                </p>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <section id="hoc-ly-thuyet" className="bg-white py-20 md:py-28">
+          <div className="mx-auto max-w-7xl px-4 md:px-8">
+            <SectionHeading
+              eyebrow="Học lý thuyết"
+              title="Ba mảng kiến thức trọng tâm"
+            />
+
+            <div className="grid gap-6">
+              {theoryModules.map((module, index) => {
+                const Icon = module.icon;
+                return (
+                  <motion.article
+                    key={module.title}
+                    initial={{ opacity: 0, y: 24 }}
+                    whileInView={{ opacity: 1, y: 0 }}
+                    viewport={{ once: true, margin: "-80px" }}
+                    transition={{ delay: index * 0.08 }}
+                    className="grid overflow-hidden rounded-lg border border-black/10 bg-[#F7F2EA] shadow-sm lg:grid-cols-[0.9fr_1.1fr]"
+                  >
+                    <div className="relative min-h-[260px]">
+                      <img
+                        src={module.image}
+                        alt={module.title}
+                        className="absolute inset-0 h-full w-full object-cover"
+                      />
+                      <div className="absolute inset-0 bg-gradient-to-t from-black/72 via-black/18 to-transparent" />
+                      <div className="absolute bottom-5 left-5 right-5">
+                        <div className="mb-3 inline-flex items-center gap-2 rounded-lg bg-white/94 px-3 py-2 text-sm font-black text-[#1F2421]">
+                          <Icon className="h-4 w-4 text-[#D64933]" />
+                          {module.eyebrow}
+                        </div>
+                        <h3 className="text-3xl font-black text-white md:text-4xl">
+                          {module.title}
+                        </h3>
+                      </div>
+                    </div>
+
+                    <div className="p-6 md:p-8">
+                      <div className="rounded-lg bg-white p-5 text-base font-semibold leading-8 text-[#1F2421]">
+                        {module.thesis}
+                      </div>
+                      <div className="mt-4 flex gap-3 rounded-lg border border-[#D64933]/20 bg-[#D64933]/8 p-4 text-sm font-bold leading-6 text-[#8B2C22]">
+                        <Lightbulb className="mt-0.5 h-5 w-5 shrink-0" />
+                        <span>{module.remember}</span>
+                      </div>
+                      <div className="mt-5 grid gap-3">
+                        {module.bullets.map((bullet) => (
+                          <div key={bullet} className="flex gap-3 text-sm leading-6 text-[#405047]">
+                            <CheckCircle2 className="mt-1 h-4 w-4 shrink-0 text-[#3E8E6C]" />
+                            <span>{bullet}</span>
+                          </div>
+                        ))}
+                      </div>
+                    </div>
+                  </motion.article>
+                );
+              })}
+            </div>
+          </div>
+        </section>
+
+        <section id="luan-diem" className="py-20 md:py-28">
+          <div className="mx-auto max-w-7xl px-4 md:px-8">
+            <SectionHeading
+              eyebrow="Luận điểm"
+              title="Các ý phân tích dễ ra đề"
+              align="center"
+            />
+
+            <div className="grid gap-5 md:grid-cols-2 lg:grid-cols-3">
+              {argumentCards.map((card, index) => {
+                const Icon = card.icon;
+                return (
+                  <motion.article
+                    key={card.title}
+                    initial={{ opacity: 0, y: 20 }}
+                    whileInView={{ opacity: 1, y: 0 }}
+                    viewport={{ once: true, margin: "-80px" }}
+                    transition={{ delay: index * 0.05 }}
+                    className="rounded-lg border border-black/10 bg-white p-6 shadow-sm"
+                  >
+                    <span className="grid h-12 w-12 place-items-center rounded-lg bg-[#1F2421] text-[#F4D35E]">
+                      <Icon className="h-6 w-6" />
+                    </span>
+                    <h3 className="mt-5 text-2xl font-black">{card.title}</h3>
+                    <p className="mt-4 text-sm font-bold leading-6 text-[#D64933]">
+                      {card.argument}
+                    </p>
+                    <p className="mt-3 text-sm leading-6 text-[#607069]">
+                      {card.explain}
+                    </p>
+                    <div className="mt-5 flex flex-wrap gap-2">
+                      {card.keywords.map((keyword) => (
+                        <span
+                          key={keyword}
+                          className="rounded-lg bg-[#F7F2EA] px-3 py-1.5 text-xs font-black text-[#405047]"
+                        >
+                          {keyword}
+                        </span>
+                      ))}
+                    </div>
+                  </motion.article>
+                );
+              })}
+            </div>
+          </div>
+        </section>
+
+        <section id="moc-nho" className="bg-[#1F2421] py-20 text-white md:py-28">
+          <div className="mx-auto max-w-7xl px-4 md:px-8">
+            <div className="grid gap-12 lg:grid-cols-[0.75fr_1.25fr] lg:items-start">
+              <div className="lg:sticky lg:top-24">
+                <p className="mb-3 text-sm font-black uppercase tracking-[0.2em] text-[#F4D35E]">
+                  Mốc nhớ
+                </p>
+                <h2 className="text-4xl font-black tracking-tight md:text-6xl">
+                  Ghi nhớ nhanh trước khi kiểm tra
+                </h2>
+                <p className="mt-5 text-base leading-8 text-white/70">
+                  Nếu chỉ còn ít thời gian, hãy học thuộc các mốc này trước.
+                  Chúng giúp bạn dựng lại toàn bộ chương trong đầu rất nhanh.
+                </p>
+                <div className="mt-8 grid gap-3 sm:grid-cols-2 lg:grid-cols-1">
+                  {forces.slice(0, 4).map((force) => (
+                    <div key={force.label} className="flex items-center gap-3 rounded-lg border border-white/10 bg-white/7 p-3">
+                      <span className={`h-9 w-2 rounded-full ${force.tone}`} />
+                      <div>
+                        <p className="text-sm font-black">{force.label}</p>
+                        <p className="text-xs text-white/55">{force.note}</p>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              </div>
+
+              <div className="grid gap-4">
+                {memoryMarks.map((item, index) => (
+                  <motion.div
+                    key={item.mark}
+                    initial={{ opacity: 0, x: 24 }}
+                    whileInView={{ opacity: 1, x: 0 }}
+                    viewport={{ once: true, margin: "-80px" }}
+                    transition={{ delay: index * 0.06 }}
+                    className="grid gap-4 rounded-lg border border-white/10 bg-white/[0.06] p-5 backdrop-blur md:grid-cols-[160px_1fr]"
+                  >
+                    <div className="flex items-center gap-3">
+                      <span className="grid h-12 w-12 place-items-center rounded-lg bg-[#F4D35E] text-[#1F2421]">
+                        <CalendarDays className="h-6 w-6" />
+                      </span>
+                      <p className="text-xl font-black text-[#F4D35E]">{item.mark}</p>
+                    </div>
+                    <div>
+                      <h3 className="text-2xl font-black">{item.title}</h3>
+                      <p className="mt-2 text-sm leading-6 text-white/72">{item.text}</p>
+                    </div>
+                  </motion.div>
+                ))}
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <section id="game" ref={gameRef} className="py-20 md:py-28">
+          <div className="mx-auto max-w-7xl px-4 md:px-8">
+            <div className="mb-10 flex flex-col gap-5 md:flex-row md:items-end md:justify-between">
+              <div>
+                <p className="mb-3 text-sm font-black uppercase tracking-[0.18em] text-[#D64933]">
+                  Game
+                </p>
+                <h2 className="text-4xl font-black tracking-tight md:text-6xl">
+                  Hành trình Đại đoàn kết
+                </h2>
+              </div>
+            </div>
+            <div className="rounded-lg border border-black/10 bg-[#1F2421] p-2 shadow-2xl md:p-4">
+              <UnityGame />
+            </div>
+          </div>
+        </section>
+      </main>
+
+      <footer className="relative overflow-hidden bg-[#1F2421] text-white">
+        <div className="absolute inset-0 bg-[radial-gradient(circle_at_20%_20%,rgba(244,211,94,0.18),transparent_32%),radial-gradient(circle_at_85%_10%,rgba(214,73,51,0.18),transparent_30%)]" />
+        <div className="relative mx-auto max-w-7xl px-4 py-14 md:px-8 md:py-18">
+          <div className="grid gap-10 lg:grid-cols-[1.1fr_0.9fr] lg:items-end">
+            <div>
+              <div className="mb-6 inline-flex items-center gap-2 rounded-lg border border-white/15 bg-white/8 px-3 py-2 text-xs font-black uppercase tracking-[0.18em] text-[#F4D35E]">
+                <Handshake className="h-4 w-4" />
+                Chapter 5
+              </div>
+              <h2 className="max-w-3xl text-4xl font-black tracking-tight md:text-6xl">
+                Đại đoàn kết là sức mạnh làm nên thắng lợi
+              </h2>
+              <div className="mt-6 flex max-w-2xl gap-4 rounded-lg border border-white/12 bg-white/[0.06] p-5">
+                <Quote className="mt-1 h-6 w-6 shrink-0 text-[#F4D35E]" />
+                <p className="text-base font-semibold leading-8 text-white/82">
+                  Đoàn kết, đoàn kết, đại đoàn kết. Thành công, thành công, đại thành công.
+                </p>
+              </div>
+            </div>
+
+            <div className="grid gap-4 sm:grid-cols-2">
+              {navItems.map((item) => (
+                <a
+                  key={item.href}
+                  href={item.href}
+                  className="group flex items-center justify-between rounded-lg border border-white/10 bg-white/[0.06] px-4 py-3 text-sm font-bold text-white/82 transition hover:border-[#F4D35E]/60 hover:bg-white/[0.1] hover:text-white"
+                >
+                  {item.label}
+                  <ArrowUpRight className="h-4 w-4 text-[#F4D35E] transition group-hover:translate-x-0.5 group-hover:-translate-y-0.5" />
+                </a>
+              ))}
+            </div>
           </div>
 
-          <div className="hidden md:flex items-center gap-8">
-            <div className="flex items-center gap-6 mr-4 border-r border-gray-300 dark:border-white/20 pr-8">
-              <button
-                onClick={() => setActiveTab('main')}
-                className={cn("text-sm font-bold uppercase tracking-wider transition-colors px-3 py-2 rounded-lg", activeTab === 'main' ? "bg-gray-100 dark:bg-white/10 text-[#8B0000] dark:text-[#D4AF37]" : "text-gray-600 dark:text-gray-300 hover:text-[#8B0000] dark:hover:text-[#D4AF37]")}
-              >
-                Trang Chủ 2D
-              </button>
-              <button
-                onClick={() => setActiveTab('library')}
-                className={cn("text-sm font-bold uppercase tracking-wider transition-colors px-3 py-2 rounded-lg flex items-center gap-2", activeTab === 'library' ? "bg-gray-100 dark:bg-white/10 text-[#8B0000] dark:text-[#D4AF37]" : "text-gray-600 dark:text-gray-300 hover:text-[#8B0000] dark:hover:text-[#D4AF37]")}
-              >
-                <Layers className="w-4 h-4" /> Thư Viện 3D
-              </button>
-
-              {activeTab === 'main' && (
-                <>
-                  <span className="text-gray-300 dark:text-white/20 mx-2">|</span>
-                  <a href="#hero" className="text-sm font-medium text-gray-600 dark:text-gray-300 hover:text-[#8B0000] dark:hover:text-[#D4AF37] transition-colors uppercase tracking-wider">Khai mạc</a>
-                  <a href="#session10" className="text-sm font-medium text-gray-600 dark:text-gray-300 hover:text-[#8B0000] dark:hover:text-[#D4AF37] transition-colors uppercase tracking-wider">Phần I</a>
-                  <a href="#session11" className="text-sm font-medium text-gray-600 dark:text-gray-300 hover:text-[#8B0000] dark:hover:text-[#D4AF37] transition-colors uppercase tracking-wider">Phần II</a>
-                  <a href="#flipbook" className="text-sm font-medium text-gray-600 dark:text-gray-300 hover:text-[#8B0000] dark:hover:text-[#D4AF37] transition-colors uppercase tracking-wider">Tư liệu</a>
-                </>
-              )}
-            </div>
-
-            <div className="flex items-center gap-3">
-              <Button variant="ghost" size="icon" onClick={toggleTheme} className="rounded-full w-9 h-9 text-gray-700 dark:text-gray-200 hover:bg-gray-100 dark:hover:bg-white/10">
-                {theme === "light" ? <Moon className="w-4 h-4" /> : <Sun className="w-4 h-4" />}
-              </Button>
-
-              <Button variant="outline" size="sm" onClick={() => setIsChatOpen(true)} className="rounded-full h-9 border-[#8B0000] dark:border-[#D4AF37]/50 text-[#8B0000] dark:text-[#D4AF37] hover:bg-[#8B0000]/10 dark:hover:bg-[#D4AF37]/10">
-                Hỏi Chatbot
-              </Button>
+          <div className="mt-12 flex flex-col gap-4 border-t border-white/10 pt-6 text-sm text-white/58 md:flex-row md:items-center md:justify-between">
+            <p className="font-semibold text-white">
+              Tư tưởng Hồ Chí Minh về đại đoàn kết toàn dân tộc và đoàn kết quốc tế
+            </p>
+            <div className="flex flex-wrap gap-2">
+              {["Tổng quan", "Lý thuyết", "Luận điểm", "Mốc nhớ", "Game"].map((label) => (
+                <span key={label} className="rounded-lg bg-white/8 px-3 py-1.5 text-xs font-bold text-white/72">
+                  {label}
+                </span>
+              ))}
             </div>
           </div>
         </div>
-      </nav>
+      </footer>
 
-      {/* ==========================================
-          RENDER NỘI DUNG THEO TAB
-      ========================================== */}
-      {activeTab === 'main' ? (
-        <>
-          {/* HIỆU ỨNG MỞ MÀN CHẠY ĐỘC LẬP TẠI ĐÂY */}
-          <CinematicReveal />
-          
-          <main className="flex-1 overflow-x-hidden bg-gray-50 dark:bg-[#0A0A0A] text-gray-800 dark:text-gray-200 selection:bg-[#D4AF37] selection:text-black transition-colors duration-300">
-            
-            {/* TẠO KHOẢNG TRẮNG ĐỂ CUỘN (SCROLL SPACER) THEO Ý TƯỞNG CỦA BẠN */}
-            {/* Chiều cao 1000px này phải khớp với con số 1000 trong file CinematicReveal.tsx */}
-            <div className="w-full h-[850px] pointer-events-none" aria-hidden="true"></div>
-
-            {/* Layer Ánh sáng Nền */}
-            <div className="fixed inset-0 z-0 pointer-events-none">
-              <div className="absolute top-[-10%] left-[-10%] w-[50%] h-[50%] bg-[#8B0000] rounded-full blur-[180px] opacity-10 dark:opacity-20"></div>
-              <div className="absolute bottom-[-10%] right-[-10%] w-[40%] h-[40%] bg-[#D4AF37] rounded-full blur-[150px] opacity-[0.04] dark:opacity-[0.08]"></div>
-              <div className="absolute inset-0 bg-[linear-gradient(rgba(0,0,0,0.03)_1px,transparent_1px),linear-gradient(90deg,rgba(0,0,0,0.03)_1px,transparent_1px)] dark:bg-[linear-gradient(rgba(255,255,255,0.03)_1px,transparent_1px),linear-gradient(90deg,rgba(255,255,255,0.03)_1px,transparent_1px)] bg-[size:64px_64px] opacity-20"></div>
-            </div>
-
-            {/* ==========================================
-                A. HERO SECTION 
-            ========================================== */}
-            <section id="hero" className="relative min-h-screen flex items-center justify-center pt-20 overflow-hidden z-10">
-              {/* Ảnh nền */}
-              <div 
-                className="absolute inset-0 z-0 bg-cover bg-center bg-no-repeat opacity-60 dark:opacity-50"
-                style={{ backgroundImage: `url('/images/BG1.jpg')` }}
-              ></div>
-
-              {/* Lớp phủ gradient sáng/tối */}
-              <div className="absolute inset-0 bg-gradient-to-b from-white/20 via-white/60 to-gray-50 dark:from-black/50 dark:via-black/40 dark:to-black/80 z-0"></div>
-              
-              <PhilosophicalParticles density={30} className="z-0 opacity-40 text-[#8B0000] dark:text-[#D4AF37]" />
-
-              <div className="container mx-auto px-4 relative z-10">
-                {/* TOÀN BỘ NỘI DUNG HERO SECTION GIỮ NGUYÊN CỦA BẠN */}
-                <motion.div initial={{ opacity: 0, y: 40 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 1.2, ease: "easeOut" }} className="max-w-5xl mx-auto text-center">
-                  <motion.div initial={{ scale: 0.8, opacity: 0 }} animate={{ scale: 1, opacity: 1 }} transition={{ delay: 0.3, duration: 1 }} className="mb-8">
-                    <Badge variant="outline" className="px-6 py-2 border-[#8B0000]/50 dark:border-[#D4AF37]/50 text-[#8B0000] dark:text-[#D4AF37] bg-[#8B0000]/10 dark:bg-[#D4AF37]/10 font-medium tracking-[0.2em] uppercase text-sm backdrop-blur-md">
-                      Chương 5 — Triển lãm chuyên đề
-                    </Badge>
-                  </motion.div>
-
-                  <h1 className="text-5xl md:text-7xl lg:text-8xl font-serif font-bold uppercase tracking-wide leading-tight mb-6 drop-shadow-2xl text-gray-900 dark:text-white">
-                    Tư Tưởng <span className="text-[#8B0000] dark:text-[#D4AF37] relative inline-block">
-                      Hồ Chí Minh
-                      <span className="absolute -bottom-2 left-0 w-full h-[2px] bg-gradient-to-r from-transparent via-[#8B0000] dark:via-[#D4AF37] to-transparent"></span>
-                    </span>
-                    <br />
-                    <span className="text-4xl md:text-6xl text-gray-600 dark:text-gray-300 mt-4 block tracking-normal">Về Đại Đoàn Kết Toàn Dân Tộc</span>
-                  </h1>
-
-                  <motion.p initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ delay: 1, duration: 1 }} className="text-xl md:text-3xl text-gray-600 dark:text-gray-400 font-light italic font-serif mb-12">
-                    “Đoàn kết, đoàn kết, đại đoàn kết — Thành công, thành công, đại thành công”
-                  </motion.p>
-
-                  <motion.div whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }} className="inline-block">
-                    <a href="#session10" className="group relative inline-flex items-center justify-center px-10 py-4 font-bold text-white transition-all duration-300 bg-gradient-to-r from-[#8B0000] to-red-900 border border-red-900/50 dark:border-[#D4AF37]/50 rounded-full hover:shadow-[0_0_30px_rgba(139,0,0,0.3)] dark:hover:shadow-[0_0_30px_rgba(212,175,55,0.3)] overflow-hidden">
-                      <span className="absolute inset-0 w-full h-full -mt-1 rounded-lg opacity-30 bg-gradient-to-b from-transparent via-transparent to-black"></span>
-                      <span className="relative uppercase tracking-widest text-sm">Khám phá triển lãm</span>
-                      <ChevronRight className="relative ml-2 w-5 h-5 group-hover:translate-x-1 transition-transform" />
-                    </a>
-                  </motion.div>
-                </motion.div>
-              </div>
-            </section>
-
-            {/* ==========================================
-                B. SESSION 10 (PHẦN I)
-            ========================================== */}
-            <section id="session10" className="py-32 relative z-10 border-t border-gray-200 dark:border-white/5">
-              <div className="container mx-auto px-4 md:px-8 max-w-7xl">
-                <motion.div initial={{ opacity: 0, y: 30 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true, margin: "-100px" }} className="text-center mb-20">
-                  <span className="text-[#8B0000] dark:text-[#D4AF37] tracking-[0.3em] text-sm font-bold uppercase mb-4 block">Phần I</span>
-                  <h2 className="text-4xl md:text-5xl font-serif font-bold text-gray-900 dark:text-white uppercase tracking-wide">
-                    Đại Đoàn Kết Toàn Dân Tộc
-                  </h2>
-                  <div className="w-24 h-[2px] bg-gradient-to-r from-transparent via-[#8B0000] to-transparent mx-auto mt-6"></div>
-                </motion.div>
-
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-8 lg:gap-12">
-                  <ExhibitionCard
-                    icon={<Shield className="w-8 h-8 text-[#8B0000] dark:text-[#D4AF37]" />}
-                    title="1. Ý nghĩa chiến lược"
-                    delay={0.1}
-                    items={[
-                      "Là vấn đề mang tính sống còn của dân tộc Việt Nam.",
-                      "Quyết định thành công của cách mạng.",
-                      "Được duy trì cả trong cách mạng DTDCND và CNXH.",
-                      "Không bao giờ thay đổi chủ trương đại đoàn kết.",
-                      <span className="text-[#8B0000] dark:text-[#D4AF37] font-bold italic">“Lúc nào dân ta đoàn kết muôn người như một thì nước ta độc lập, tự do.” - Hồ Chí Minh</span>
-                    ]}
-                  />
-                  <ExhibitionCard
-                    icon={<Flag className="w-8 h-8 text-[#8B0000] dark:text-[#D4AF37]" />}
-                    title="2. Mục tiêu, nhiệm vụ hàng đầu"
-                    delay={0.2}
-                    items={[
-                      "Là mục tiêu lâu dài của cách mạng.",
-                      "Nhiệm vụ hàng đầu của Đảng, quán triệt trong mọi lĩnh vực.",
-                      "Chuyển nhu cầu tự phát của quần chúng thành sức mạnh tự giác.",
-                      "Đoàn kết toàn dân, phụng sự Tổ quốc."
-                    ]}
-                  />
-                  <ExhibitionCard
-                    icon={<Layers className="w-8 h-8 text-[#8B0000] dark:text-[#D4AF37]" />}
-                    title="3. Chủ thể & Nền tảng"
-                    delay={0.3}
-                    items={[
-                      "Chủ thể: Toàn thể nhân dân, không phân biệt giai cấp, tôn giáo.",
-                      "Nền tảng: Liên minh công nhân - nông dân - trí thức.",
-                      "Hạt nhân: Sự đoàn kết và thống nhất trong Đảng.",
-                      "Giải quyết hài hòa mối quan hệ giữa giai cấp, dân tộc."
-                    ]}
-                  />
-                  <ExhibitionCard
-                    icon={<BookOpen className="w-8 h-8 text-[#8B0000] dark:text-[#D4AF37]" />}
-                    title="4. Điều kiện & Nguyên tắc"
-                    delay={0.4}
-                    items={[
-                      "Lấy lợi ích chung làm điểm quy tụ, tôn trọng lợi ích khác biệt.",
-                      "Kế thừa truyền thống yêu nước, nhân nghĩa của dân tộc.",
-                      "Có lòng khoan dung, độ lượng và niềm tin vào nhân dân.",
-                      "Mặt trận dân tộc thống nhất phải hoạt động theo nguyên tắc hiệp thương dân chủ."
-                    ]}
-                  />
-                </div>
-              </div>
-            </section>
-
-            {/* ==========================================
-                C. SESSION 11 (PHẦN II)
-            ========================================== */}
-            <section id="session11" className="py-32 relative z-10 bg-white dark:bg-black/40 border-t border-gray-200 dark:border-white/5">
-              <div className="container mx-auto px-4 md:px-8 max-w-6xl">
-                <div className="flex flex-col lg:flex-row gap-16 items-center">
-                  <motion.div initial={{ opacity: 0, x: -50 }} whileInView={{ opacity: 1, x: 0 }} viewport={{ once: true }} className="lg:w-1/2">
-                    <span className="text-[#8B0000] dark:text-[#D4AF37] tracking-[0.3em] text-sm font-bold uppercase mb-4 block">Phần II</span>
-                    <h2 className="text-4xl md:text-5xl font-serif font-bold text-gray-900 dark:text-white uppercase tracking-wide leading-tight mb-8">
-                      Đoàn Kết <br /> <span className="text-transparent bg-clip-text bg-gradient-to-r from-[#8B0000] to-red-500 dark:to-[#D4AF37]">Quốc Tế</span>
-                    </h2>
-                    <div className="prose prose-lg dark:prose-invert text-gray-700 dark:text-gray-300">
-                      <p className="leading-relaxed border-l-4 border-[#8B0000] pl-6 italic">
-                        "Thực hiện đoàn kết quốc tế nhằm kết hợp sức mạnh dân tộc với sức mạnh thời đại, tạo sức mạnh tổng hợp cho cách mạng."
-                      </p>
-                    </div>
-                  </motion.div>
-
-                  <motion.div initial={{ opacity: 0, x: 50 }} whileInView={{ opacity: 1, x: 0 }} viewport={{ once: true }} className="lg:w-1/2 space-y-8 relative">
-                    <div className="absolute left-6 top-0 bottom-0 w-[2px] bg-gradient-to-b from-[#8B0000] via-red-400 dark:via-[#D4AF37] to-transparent opacity-50"></div>
-
-                    <div className="relative pl-16">
-                      <div className="absolute left-4 top-2 w-5 h-5 bg-white dark:bg-[#0A0A0A] border-2 border-red-500 dark:border-[#D4AF37] rounded-full shadow-[0_0_15px_rgba(255,0,0,0.5)] dark:shadow-[0_0_15px_rgba(212,175,55,0.8)]"></div>
-                      <h4 className="text-2xl font-bold text-gray-900 dark:text-white mb-2 font-serif">Lực lượng đoàn kết</h4>
-                      <p className="text-gray-600 dark:text-gray-400 text-sm leading-relaxed">
-                        Bao gồm: phong trào cộng sản và công nhân quốc tế; phong trào đấu tranh giải phóng dân tộc; phong trào hòa bình, dân chủ thế giới.
-                      </p>
-                    </div>
-
-                    <div className="relative pl-16">
-                      <div className="absolute left-4 top-2 w-5 h-5 bg-white dark:bg-[#0A0A0A] border-2 border-[#8B0000] rounded-full shadow-[0_0_15px_rgba(139,0,0,0.5)] dark:shadow-[0_0_15px_rgba(139,0,0,0.8)]"></div>
-                      <h4 className="text-2xl font-bold text-gray-900 dark:text-white mb-2 font-serif">Nguyên tắc cốt lõi</h4>
-                      <p className="text-gray-600 dark:text-gray-400 text-sm leading-relaxed">
-                        Đoàn kết trên cơ sở thống nhất mục tiêu và lợi ích có lý, có tình; đồng thời phải đoàn kết trên cơ sở độc lập, tự chủ ("Tự lực cánh sinh, dựa vào sức mình là chính").
-                      </p>
-                    </div>
-                  </motion.div>
-                </div>
-              </div>
-            </section>
-
-            {/* ==========================================
-                D. FLIPBOOK 
-            ========================================== */}
-            <section id="flipbook" className="py-32 relative z-10 bg-gray-50 dark:bg-[#0A0A0A] border-t border-gray-200 dark:border-white/5">
-              <div className="absolute inset-0 bg-[radial-gradient(circle_at_center,rgba(139,0,0,0.03),transparent_60%)] dark:bg-[radial-gradient(circle_at_center,rgba(212,175,55,0.03),transparent_60%)] pointer-events-none"></div>
-
-              <div className="container mx-auto px-4 md:px-8 max-w-6xl relative z-10">
-                <motion.div initial={{ opacity: 0, y: 30 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} className="text-center mb-16">
-                  <Badge variant="outline" className="mb-6 px-4 py-1 border-[#8B0000]/30 dark:border-[#D4AF37]/30 text-[#8B0000] dark:text-[#D4AF37] bg-[#8B0000]/5 dark:bg-[#D4AF37]/5 font-medium tracking-[0.2em] uppercase text-xs backdrop-blur-md">
-                    Tư liệu tương tác
-                  </Badge>
-                  <h2 className="text-4xl md:text-5xl font-serif font-bold text-gray-900 dark:text-white uppercase tracking-wide">
-                    Tập Hợp Lực Lượng
-                  </h2>
-                  <div className="w-16 h-[2px] bg-gradient-to-r from-transparent via-[#8B0000] to-transparent mx-auto mt-6 mb-6"></div>
-                  <p className="text-gray-600 dark:text-gray-400 max-w-2xl mx-auto text-lg leading-relaxed">
-                    Trò chơi 3D tương tác giúp mô phỏng quá trình xây dựng khối đại đoàn kết toàn dân tộc và đoàn kết quốc tế theo tư tưởng Hồ Chí Minh.
-                  </p>
-                </motion.div>
-
-                <div id="flipbook-reader" className="rounded-[2rem] border border-gray-200 dark:border-white/10 bg-white dark:bg-white/[0.02] backdrop-blur-md shadow-[0_0_40px_rgba(0,0,0,0.05)] dark:shadow-[0_0_40px_rgba(0,0,0,0.8)] p-4 md:p-8">
-                  <UnityGame />
-                </div>
-              </div>
-            </section>
-
-          </main>
-
-          {/* FOOTER */}
-         <Footer />
-        </>
-        
-      ) : (
-        <main className="fixed top-20 left-0 right-0 bottom-0 overflow-hidden bg-[#050505]">
-          <InteractiveLibrary />
-        </main>
-      )}
-
-      {/* ==========================================
-          CHATBOT & DIALOGS
-      ========================================== */}
-      <Button
-        size="lg"
-        className="fixed bottom-6 right-6 h-14 px-6 rounded-full shadow-[0_0_20px_rgba(139,0,0,0.3)] dark:shadow-[0_0_20px_rgba(212,175,55,0.4)] z-50 bg-gradient-to-r from-[#8B0000] to-red-900 hover:from-red-900 hover:to-black text-white dark:text-[#D4AF37] border border-red-900/30 dark:border-[#D4AF37]/30 flex items-center gap-2 transition-all duration-300 hover:scale-105"
+      <button
+        type="button"
         onClick={() => setIsChatOpen(true)}
+        className="fixed bottom-5 right-5 z-40 grid h-14 w-14 place-items-center rounded-lg bg-[#1F2421] text-white shadow-xl transition hover:bg-[#D64933]"
+        aria-label="Mở trợ lý AI"
       >
-        <MessageSquare className="w-5 h-5" />
-        <span className="font-bold text-sm tracking-wide">Hỏi AI</span>
-      </Button>
+        <MessageCircle className="h-6 w-6" />
+      </button>
 
       <AnimatePresence>
         {isChatOpen && (
-          <motion.div initial={{ opacity: 0, scale: 0.95, y: 20 }} animate={{ opacity: 1, scale: 1, y: 0 }} exit={{ opacity: 0, scale: 0.95, y: 20 }} className="fixed bottom-6 right-6 w-[95vw] md:w-[600px] h-[80vh] max-h-[800px] z-50 flex flex-col bg-white dark:bg-[#0A0A0A] border border-gray-200 dark:border-[#D4AF37]/30 shadow-2xl dark:shadow-[0_20px_50px_rgba(0,0,0,0.5)] rounded-[2rem] overflow-hidden">
-            <div className="p-6 bg-gradient-to-br from-gray-100 to-white dark:from-[#111] dark:to-black border-b border-gray-200 dark:border-white/10 flex items-center justify-between">
-              <div className="flex items-center gap-4">
-                <div className="relative">
-                  <div className="w-12 h-12 rounded-2xl bg-gradient-to-tr from-[#8B0000] to-red-900 flex items-center justify-center border border-red-900/50 dark:border-[#D4AF37]/50">
-                    <MessageSquare className="w-6 h-6 text-white dark:text-[#D4AF37]" />
-                  </div>
-                  <div className="absolute -bottom-1 -right-1 w-4 h-4 bg-green-500 border-2 border-white dark:border-black rounded-full" />
-                </div>
+          <motion.aside
+            initial={{ opacity: 0, x: 32 }}
+            animate={{ opacity: 1, x: 0 }}
+            exit={{ opacity: 0, x: 32 }}
+            className="fixed bottom-4 right-4 z-50 flex h-[calc(100vh-2rem)] w-[calc(100vw-2rem)] max-w-[440px] flex-col overflow-hidden rounded-lg border border-black/10 bg-[#F7F2EA] shadow-2xl md:h-[720px]"
+          >
+            <div className="flex items-center justify-between border-b border-black/10 bg-white p-4">
+              <div className="flex items-center gap-3">
+                <span className="grid h-10 w-10 place-items-center rounded-lg bg-[#D64933] text-white">
+                  <GraduationCap className="h-5 w-5" />
+                </span>
                 <div>
-                  <p className="font-serif font-bold text-lg leading-none mb-1 text-gray-900 dark:text-white">Triển Lãm AI</p>
+                  <h2 className="font-black">Trợ lý Chapter 5</h2>
+                  <p className="text-xs text-[#607069]">Tóm tắt, phân tích, luyện câu hỏi</p>
                 </div>
               </div>
-              <Button variant="ghost" size="icon" className="rounded-full hover:bg-gray-200 dark:hover:bg-white/10 text-gray-500 dark:text-gray-400" onClick={() => setIsChatOpen(false)}>
-                <X className="w-6 h-6" />
-              </Button>
+              <button
+                type="button"
+                onClick={() => setIsChatOpen(false)}
+                className="grid h-9 w-9 place-items-center rounded-lg hover:bg-black/5"
+                aria-label="Đóng trợ lý AI"
+              >
+                <X className="h-5 w-5" />
+              </button>
             </div>
 
-            <div className="flex-1 overflow-y-auto p-6 bg-gray-50 dark:bg-[#050505] custom-scrollbar">
-              <div className="space-y-6">
-                {messages.map((msg, idx) => (
-                  <div key={idx} className={`flex ${msg.role === "user" ? "justify-end" : "justify-start"}`}>
-                    <div className={`max-w-[85%] p-4 rounded-[1.5rem] text-sm leading-relaxed ${msg.role === "user" ? "bg-gradient-to-br from-[#8B0000] to-red-900 text-white rounded-tr-none shadow-lg" : "bg-white text-gray-800 dark:bg-[#111] dark:text-gray-200 rounded-tl-none shadow-sm border border-gray-200 dark:border-white/10"}`}>
-                      <div className={cn("prose prose-sm max-w-none", msg.role === "model" && "dark:prose-invert")}>
-                        <ReactMarkdown remarkPlugins={[remarkGfm]}>{msg.text}</ReactMarkdown>
-                      </div>
-                    </div>
+            <div className="border-b border-black/10 p-4">
+              <div className="grid gap-2">
+                {suggestedQuestions.slice(0, 2).map((question) => (
+                  <button
+                    key={question}
+                    type="button"
+                    onClick={() => void handleSend(question)}
+                    className="rounded-lg border border-black/10 bg-white px-3 py-2 text-left text-xs font-semibold leading-5 text-[#405047] transition hover:border-[#D64933]/40"
+                  >
+                    {question}
+                  </button>
+                ))}
+              </div>
+            </div>
+
+            <div className="flex-1 overflow-y-auto p-4">
+              <div className="grid gap-3">
+                {messages.map((message, index) => (
+                  <div
+                    key={`${message.role}-${index}`}
+                    className={`max-w-[86%] rounded-lg px-4 py-3 text-sm leading-6 ${
+                      message.role === "user"
+                        ? "ml-auto bg-[#1F2421] text-white"
+                        : "mr-auto border border-black/10 bg-white text-[#1F2421]"
+                    }`}
+                  >
+                    <ReactMarkdown remarkPlugins={[remarkGfm]}>
+                      {message.text}
+                    </ReactMarkdown>
                   </div>
                 ))}
                 {isLoading && (
-                  <div className="flex justify-start">
-                    <div className="bg-white dark:bg-[#111] p-4 rounded-[1.5rem] rounded-tl-none border border-gray-200 dark:border-white/10 flex gap-1.5 shadow-sm">
-                      <motion.div animate={{ scale: [1, 1.2, 1] }} transition={{ repeat: Infinity, duration: 1 }} className="w-2 h-2 bg-[#8B0000]/60 dark:bg-[#D4AF37]/60 rounded-full" />
-                      <motion.div animate={{ scale: [1, 1.2, 1] }} transition={{ repeat: Infinity, duration: 1, delay: 0.2 }} className="w-2 h-2 bg-[#8B0000]/60 dark:bg-[#D4AF37]/60 rounded-full" />
-                      <motion.div animate={{ scale: [1, 1.2, 1] }} transition={{ repeat: Infinity, duration: 1, delay: 0.4 }} className="w-2 h-2 bg-[#8B0000]/60 dark:bg-[#D4AF37]/60 rounded-full" />
-                    </div>
+                  <div className="mr-auto rounded-lg border border-black/10 bg-white px-4 py-3 text-sm text-[#607069]">
+                    Đang tìm câu trả lời...
                   </div>
                 )}
-                <div ref={messagesEndRef} />
               </div>
             </div>
 
-            <div className="p-6 bg-white dark:bg-[#111] border-t border-gray-200 dark:border-white/10">
-              <form className="flex gap-3" onSubmit={(e) => { e.preventDefault(); handleSendMessage(); }}>
-                <Input
-                  placeholder="Nhập câu hỏi..." value={inputValue} onChange={(e) => setInputValue(e.target.value)}
-                  className="flex-1 h-12 rounded-full px-6 bg-gray-100 text-gray-900 border-gray-300 dark:bg-black dark:text-white dark:border-white/20 focus-visible:ring-[#8B0000]/30 dark:focus-visible:ring-[#D4AF37]/30 focus-visible:border-[#8B0000]/50 dark:focus-visible:border-[#D4AF37]/50"
-                />
-                <Button type="submit" size="icon" className="w-12 h-12 rounded-full bg-[#8B0000] text-white hover:bg-red-900 dark:bg-[#D4AF37] dark:text-black dark:hover:bg-[#b08d2b]" disabled={isLoading || !inputValue.trim()}>
-                  <Send className="w-5 h-5" />
-                </Button>
-              </form>
-            </div>
-          </motion.div>
+            <form onSubmit={handleSubmit} className="flex gap-2 border-t border-black/10 bg-white p-4">
+              <input
+                value={inputValue}
+                onChange={(event) => setInputValue(event.target.value)}
+                placeholder="Nhập câu hỏi về Chapter 5"
+                className="min-w-0 flex-1 rounded-lg border border-black/10 bg-[#F7F2EA] px-4 py-3 text-sm outline-none transition focus:border-[#D64933]"
+              />
+              <button
+                type="submit"
+                disabled={isLoading || !inputValue.trim()}
+                className="grid h-12 w-12 place-items-center rounded-lg bg-[#D64933] text-white transition hover:bg-[#B83A2A] disabled:cursor-not-allowed disabled:opacity-50"
+                aria-label="Gửi câu hỏi"
+              >
+                <Send className="h-5 w-5" />
+              </button>
+            </form>
+          </motion.aside>
         )}
       </AnimatePresence>
-
     </div>
   );
 }
 
-const ExhibitionCard = ({ title, items, icon, delay }: { title: string, items: React.ReactNode[], icon: React.ReactNode, delay: number }) => {
-  return (
-    <motion.div
-      initial={{ opacity: 0, y: 30 }}
-      whileInView={{ opacity: 1, y: 0 }}
-      viewport={{ once: true, margin: "-50px" }}
-      transition={{ duration: 0.6, delay: delay }}
-      whileHover={{ y: -5 }}
-      className="group relative p-8 md:p-10 bg-white dark:bg-white/[0.02] backdrop-blur-xl border border-gray-200 dark:border-white/10 rounded-2xl overflow-hidden transition-all duration-500 hover:border-[#8B0000]/50 dark:hover:border-[#D4AF37]/50 shadow-xl dark:shadow-none hover:shadow-[0_0_40px_rgba(139,0,0,0.1)] dark:hover:shadow-[0_0_40px_rgba(139,0,0,0.2)]"
-    >
-      <div className="absolute inset-0 bg-gradient-to-br from-red-50 dark:from-[#8B0000]/10 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-700 pointer-events-none"></div>
-
-      <div className="relative z-10">
-        <div className="flex items-center gap-5 mb-8">
-          <div className="p-4 bg-gray-50 dark:bg-black/60 border border-gray-200 dark:border-white/10 rounded-xl group-hover:border-[#8B0000]/50 dark:group-hover:border-[#D4AF37]/50 group-hover:scale-110 transition-all duration-500 shadow-md dark:shadow-lg">
-            {icon}
-          </div>
-          <h4 className="text-xl md:text-2xl font-bold text-gray-900 dark:text-white font-serif">{title}</h4>
-        </div>
-
-        <div className="relative pl-6 border-l border-gray-200 dark:border-white/10 group-hover:border-[#8B0000]/30 dark:group-hover:border-[#D4AF37]/30 transition-colors duration-500 space-y-5">
-          {items.map((item, index) => (
-            <div key={index} className="relative">
-              <div className="absolute -left-[29px] top-2 w-2 h-2 bg-gray-400 dark:bg-gray-500 rounded-full group-hover:bg-[#8B0000] dark:group-hover:bg-[#D4AF37] group-hover:shadow-[0_0_10px_rgba(139,0,0,0.5)] dark:group-hover:shadow-[0_0_10px_rgba(212,175,55,1)] transition-all duration-300"></div>
-              <p className="text-gray-700 dark:text-gray-300 text-sm md:text-base leading-relaxed">
-                {item}
-              </p>
-            </div>
-          ))}
-        </div>
-      </div>
-    </motion.div>
-  );
-};
+export default App;
