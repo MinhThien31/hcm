@@ -37,6 +37,7 @@ import { getChatResponse } from "./lib/gemini";
 type Message = {
   role: "user" | "model";
   text: string;
+  citations?: string[];
 };
 
 type TheoryModule = {
@@ -55,6 +56,14 @@ type ArgumentCard = {
   argument: string;
   explain: string;
   keywords: string[];
+};
+
+type FooterSourceGroup = {
+  title: string;
+  items: {
+    label: string;
+    href?: string;
+  }[];
 };
 
 const navItems = [
@@ -77,6 +86,86 @@ const images = {
   international:
     "https://commons.wikimedia.org/wiki/Special:FilePath/Ho%20Chi%20Minh%20with%20Vietnamese%20expats%20in%20France%2C%201946.jpg",
 };
+
+const footerSourceGroups: FooterSourceGroup[] = [
+  {
+    title: "Nguồn hình ảnh",
+    items: [
+      {
+        label: "Hero: Ho Chi Minh with children (Wikimedia Commons)",
+        href: "https://commons.wikimedia.org/wiki/Special:FilePath/Ho-chi-Minh%20with%20children%20%282%29.jpg",
+      },
+      {
+        label: "Portrait: Ho Chi Minh - 1946 Portrait (Wikimedia Commons)",
+        href: "https://commons.wikimedia.org/wiki/File:Ho_Chi_Minh_-_1946_Portrait.jpg",
+      },
+      {
+        label: "Ảnh lao động Sài Gòn: Saigonese laborers (Wikimedia Commons)",
+        href: "https://commons.wikimedia.org/wiki/File:Saigonese_laborers.jpg",
+      },
+      {
+        label: "Ảnh Mặt trận: Nguyen Thien Nhan gặp Phó Tổng thống Ấn Độ (Wikimedia Commons)",
+        href: "https://commons.wikimedia.org/wiki/File:The_Politburo_Member_and_President,_Vietnam_Fatherland_Front,_Mr._Nguyen_Thein_Nhan_meeting_the_Vice_President,_Shri_Mohd._Hamid_Ansari,_in_New_Delhi_on_March_20,_2015.jpg",
+      },
+      {
+        label: "Ảnh quốc tế: Ho Chi Minh with Vietnamese expats in France, 1946 (Wikimedia Commons)",
+        href: "https://commons.wikimedia.org/wiki/File:Ho_Chi_Minh_with_Vietnamese_expats_in_France,_1946.jpg",
+      },
+      {
+        label: "Ảnh Tuyên ngôn Độc lập tại Ba Đình, 2/9/1945 (Wikimedia Commons)",
+        href: "https://commons.wikimedia.org/wiki/File:Pr%C3%A9sident_Ho-chi-Minh_lit_la_Proclamation-d%27ind%C3%A9pendance_sur_la_place_Ba-dinh_le_2nd_Sep_1945.jpg",
+      },
+      {
+        label: "Ảnh/sự kiện Bến Nhà Rồng, nơi Nguyễn Tất Thành ra đi tìm đường cứu nước",
+        href: "https://nemtv.vn/ben-nha-rong-o-dau",
+      },
+      {
+        label: "Ảnh/sự kiện Nguyễn Ái Quốc tại Đại hội Tours năm 1920",
+        href: "https://baotanglichsuquocgia.vn/vi/Articles/2001/66530/ve-buc-anh-bac-ho-tai-djai-hoi-tours-nam-1920.html",
+      },
+    ],
+  },
+  {
+    title: "Nguồn nội dung",
+    items: [
+      {
+        label: "Giáo trình Tư tưởng Hồ Chí Minh - Thư viện số Quốc hội",
+        href: "https://thuvienso.quochoi.vn/handle/11742/95646",
+      },
+      {
+        label: "Giáo trình Tư tưởng Hồ Chí Minh - Thư viện Đại học Quản lý và Công nghệ Hải Phòng",
+        href: "https://lib.hpu.edu.vn/handle/123456789/270",
+      },
+      {
+        label: "Bài giảng Chương 5: Đại đoàn kết dân tộc và đoàn kết quốc tế",
+        href: "https://tailieu.vn/doc/bai-giang-tu-tuong-ho-chi-minh-dai-doan-ket-dan-toc-doan-ket-quoc-te-2543870.html",
+      },
+      {
+        label: "Bản Tuyên ngôn Độc lập - Thư viện sách Hồ Chí Minh TP.HCM",
+        href: "https://thuviensachhochiminh.tphcm.gov.vn/documents/35261/39007/TuyenNgonDocLap.pdf",
+      },
+      {
+        label: "Nội dung RAG nội bộ của project: knowledge-full và knowledge",
+      },
+    ],
+  },
+  {
+    title: "Nguồn chatbot",
+    items: [
+      {
+        label: "OpenAI File Search / Vector Stores - nguồn tra cứu khi dùng OPENAI_VECTOR_STORE_IDS",
+        href: "https://platform.openai.com/docs/guides/tools-file-search",
+      },
+      {
+        label: "OpenAI Responses API - API backend đang dùng khi gọi file_search",
+        href: "https://platform.openai.com/docs/api-reference/responses",
+      },
+      {
+        label: "Local markdown RAG của project: knowledge-full và knowledge, citations trả theo tên file",
+      },
+    ],
+  },
+];
 
 const overviewCards = [
   {
@@ -306,7 +395,14 @@ function App() {
 
     try {
       const answer = await getChatResponse(cleanText, chatHistory);
-      setMessages([...nextMessages, { role: "model", text: answer }]);
+      setMessages([
+        ...nextMessages,
+        {
+          role: "model",
+          text: answer.answer,
+          citations: answer.citations,
+        },
+      ]);
     } catch {
       setMessages([
         ...nextMessages,
@@ -742,6 +838,52 @@ function App() {
             </div>
           </div>
 
+          <div className="mt-12 border-t border-white/10 pt-8">
+            <div className="mb-6 flex flex-col gap-3 md:flex-row md:items-end md:justify-between">
+              <div>
+                <p className="text-sm font-black uppercase tracking-[0.18em] text-[#F4D35E]">
+                  Nguồn sử dụng
+                </p>
+                <h3 className="mt-2 text-2xl font-black tracking-tight md:text-3xl">
+                  Hình ảnh, nội dung và nguồn trả lời của chatbot
+                </h3>
+              </div>
+              <p className="max-w-xl text-sm leading-6 text-white/58">
+                Mỗi câu trả lời của trợ lý sẽ hiện thêm nguồn riêng nếu backend tìm được citation từ vector store hoặc local RAG.
+              </p>
+            </div>
+
+            <div className="grid gap-4 lg:grid-cols-3">
+              {footerSourceGroups.map((group) => (
+                <section
+                  key={group.title}
+                  className="rounded-lg border border-white/10 bg-white/[0.06] p-5"
+                >
+                  <h4 className="text-base font-black text-white">{group.title}</h4>
+                  <div className="mt-4 grid gap-3">
+                    {group.items.map((source) => (
+                      <div key={source.label} className="flex gap-3 text-sm leading-6 text-white/70">
+                        <CheckCircle2 className="mt-1 h-4 w-4 shrink-0 text-[#F4D35E]" />
+                        {source.href ? (
+                          <a
+                            href={source.href}
+                            target="_blank"
+                            rel="noreferrer"
+                            className="min-w-0 break-words underline decoration-white/25 underline-offset-4 transition hover:text-white hover:decoration-[#F4D35E]"
+                          >
+                            {source.label}
+                          </a>
+                        ) : (
+                          <span className="min-w-0 break-words">{source.label}</span>
+                        )}
+                      </div>
+                    ))}
+                  </div>
+                </section>
+              ))}
+            </div>
+          </div>
+
           <div className="mt-12 flex flex-col gap-4 border-t border-white/10 pt-6 text-sm text-white/58 md:flex-row md:items-center md:justify-between">
             <p className="font-semibold text-white">
               Tư tưởng Hồ Chí Minh về đại đoàn kết toàn dân tộc và đoàn kết quốc tế
@@ -823,6 +965,20 @@ function App() {
                     <ReactMarkdown remarkPlugins={[remarkGfm]}>
                       {message.text}
                     </ReactMarkdown>
+                    {message.role === "model" && message.citations && message.citations.length > 0 && (
+                      <div className="mt-3 flex flex-wrap gap-2 border-t border-black/10 pt-3">
+                        {message.citations.map((citation) => (
+                          <span
+                            key={citation}
+                            className="inline-flex max-w-full items-center gap-1.5 rounded-md bg-[#F7F2EA] px-2 py-1 text-[11px] font-bold leading-4 text-[#607069]"
+                            title={citation}
+                          >
+                            <BookOpen className="h-3 w-3 shrink-0 text-[#D64933]" />
+                            <span className="truncate">{citation}</span>
+                          </span>
+                        ))}
+                      </div>
+                    )}
                   </div>
                 ))}
                 {isLoading && (

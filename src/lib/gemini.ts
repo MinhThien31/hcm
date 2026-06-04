@@ -3,6 +3,11 @@ type ChatHistoryItem = {
   parts: { text: string }[];
 };
 
+type ChatResponse = {
+  answer: string;
+  citations: string[];
+};
+
 const API_TIMEOUT_MS = 30_000;
 
 function normalizeVietnameseText(value: string): string {
@@ -29,9 +34,14 @@ function getGreetingResponse(message: string): string | null {
 export const getChatResponse = async (
   message: string,
   history: ChatHistoryItem[],
-): Promise<string> => {
+): Promise<ChatResponse> => {
   const greeting = getGreetingResponse(message);
-  if (greeting) return greeting;
+  if (greeting) {
+    return {
+      answer: greeting,
+      citations: ["OpenAI Vector Store hoặc local markdown RAG của dự án"],
+    };
+  }
 
   const controller = new AbortController();
   const timeoutId = window.setTimeout(() => controller.abort(), API_TIMEOUT_MS);
@@ -51,7 +61,10 @@ export const getChatResponse = async (
     throw new Error(data?.error || `Chat request failed with status ${response.status}`);
   }
 
-  return data?.answer?.trim() || "Xin lỗi, tôi chưa nhận được câu trả lời từ hệ thống.";
+  return {
+    answer: data?.answer?.trim() || "Xin lỗi, tôi chưa nhận được câu trả lời từ hệ thống.",
+    citations: Array.isArray(data?.citations) ? data.citations.filter(Boolean) : [],
+  };
 };
 
 export const generateImage = async (
