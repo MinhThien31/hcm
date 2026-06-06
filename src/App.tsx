@@ -75,8 +75,7 @@ const navItems = [
 ];
 
 const images = {
-  hero:
-    "https://commons.wikimedia.org/wiki/Special:FilePath/Ho-chi-Minh%20with%20children%20%282%29.jpg",
+  hero: "https://commons.wikimedia.org/wiki/Special:FilePath/Ho-chi-Minh%20with%20children%20%282%29.jpg",
   portrait:
     "https://commons.wikimedia.org/wiki/Special:FilePath/Ho%20Chi%20Minh%20-%201946%20Portrait.jpg",
   people:
@@ -104,19 +103,23 @@ const footerSourceGroups: FooterSourceGroup[] = [
         href: "https://commons.wikimedia.org/wiki/File:Saigonese_laborers.jpg",
       },
       {
-        label: "Ảnh Mặt trận: Nguyen Thien Nhan gặp Phó Tổng thống Ấn Độ (Wikimedia Commons)",
+        label:
+          "Ảnh Mặt trận: Nguyen Thien Nhan gặp Phó Tổng thống Ấn Độ (Wikimedia Commons)",
         href: "https://commons.wikimedia.org/wiki/File:The_Politburo_Member_and_President,_Vietnam_Fatherland_Front,_Mr._Nguyen_Thein_Nhan_meeting_the_Vice_President,_Shri_Mohd._Hamid_Ansari,_in_New_Delhi_on_March_20,_2015.jpg",
       },
       {
-        label: "Ảnh quốc tế: Ho Chi Minh with Vietnamese expats in France, 1946 (Wikimedia Commons)",
+        label:
+          "Ảnh quốc tế: Ho Chi Minh with Vietnamese expats in France, 1946 (Wikimedia Commons)",
         href: "https://commons.wikimedia.org/wiki/File:Ho_Chi_Minh_with_Vietnamese_expats_in_France,_1946.jpg",
       },
       {
-        label: "Ảnh Tuyên ngôn Độc lập tại Ba Đình, 2/9/1945 (Wikimedia Commons)",
+        label:
+          "Ảnh Tuyên ngôn Độc lập tại Ba Đình, 2/9/1945 (Wikimedia Commons)",
         href: "https://commons.wikimedia.org/wiki/File:Pr%C3%A9sident_Ho-chi-Minh_lit_la_Proclamation-d%27ind%C3%A9pendance_sur_la_place_Ba-dinh_le_2nd_Sep_1945.jpg",
       },
       {
-        label: "Ảnh/sự kiện Bến Nhà Rồng, nơi Nguyễn Tất Thành ra đi tìm đường cứu nước",
+        label:
+          "Ảnh/sự kiện Bến Nhà Rồng, nơi Nguyễn Tất Thành ra đi tìm đường cứu nước",
         href: "https://nemtv.vn/ben-nha-rong-o-dau",
       },
       {
@@ -133,7 +136,8 @@ const footerSourceGroups: FooterSourceGroup[] = [
         href: "https://thuvienso.quochoi.vn/handle/11742/95646",
       },
       {
-        label: "Giáo trình Tư tưởng Hồ Chí Minh - Thư viện Đại học Quản lý và Công nghệ Hải Phòng",
+        label:
+          "Giáo trình Tư tưởng Hồ Chí Minh - Thư viện Đại học Quản lý và Công nghệ Hải Phòng",
         href: "https://lib.hpu.edu.vn/handle/123456789/270",
       },
       {
@@ -153,15 +157,18 @@ const footerSourceGroups: FooterSourceGroup[] = [
     title: "Nguồn chatbot",
     items: [
       {
-        label: "OpenAI File Search / Vector Stores - nguồn tra cứu khi dùng OPENAI_VECTOR_STORE_IDS",
+        label:
+          "OpenAI File Search / Vector Stores - nguồn tra cứu khi dùng OPENAI_VECTOR_STORE_IDS",
         href: "https://platform.openai.com/docs/guides/tools-file-search",
       },
       {
-        label: "OpenAI Responses API - API backend đang dùng khi gọi file_search",
+        label:
+          "OpenAI Responses API - API backend đang dùng khi gọi file_search",
         href: "https://platform.openai.com/docs/api-reference/responses",
       },
       {
-        label: "Local markdown RAG của project: knowledge-full và knowledge, citations trả theo tên file",
+        label:
+          "Local markdown RAG của project: knowledge-full và knowledge, citations trả theo tên file",
       },
     ],
   },
@@ -324,7 +331,11 @@ const forces = [
   { label: "Thanh niên", tone: "bg-[#277DA1]", note: "Chủ nhân tương lai" },
   { label: "Phụ nữ", tone: "bg-[#A23E72]", note: "Một nửa xã hội" },
   { label: "Tôn giáo", tone: "bg-[#6D597A]", note: "Đồng bào cùng Tổ quốc" },
-  { label: "Dân tộc thiểu số", tone: "bg-[#577590]", note: "Bình đẳng, đoàn kết" },
+  {
+    label: "Dân tộc thiểu số",
+    tone: "bg-[#577590]",
+    note: "Bình đẳng, đoàn kết",
+  },
   { label: "Kiều bào", tone: "bg-[#2A9D8F]", note: "Bộ phận của dân tộc" },
 ];
 
@@ -352,7 +363,13 @@ function SectionHeading({
   align?: "left" | "center";
 }) {
   return (
-    <div className={align === "center" ? "mx-auto mb-12 max-w-3xl text-center" : "mb-12 max-w-3xl"}>
+    <div
+      className={
+        align === "center"
+          ? "mx-auto mb-12 max-w-3xl text-center"
+          : "mb-12 max-w-3xl"
+      }
+    >
       <p className="mb-3 text-sm font-black uppercase tracking-[0.2em] text-[#D64933]">
         {eyebrow}
       </p>
@@ -464,7 +481,11 @@ function App() {
               className="grid h-10 w-10 place-items-center rounded-lg border border-black/10 bg-white/60 md:hidden"
               aria-label="Mở menu"
             >
-              {isMenuOpen ? <X className="h-5 w-5" /> : <Menu className="h-5 w-5" />}
+              {isMenuOpen ? (
+                <X className="h-5 w-5" />
+              ) : (
+                <Menu className="h-5 w-5" />
+              )}
             </button>
           </div>
         </div>
@@ -516,8 +537,8 @@ function App() {
               </div>
               <h1 className="max-w-5xl text-5xl font-black leading-[0.96] tracking-tight md:text-7xl lg:text-8xl">
                 Chapter 5
-                <span className="block text-[#F4D35E]">
-                  Học chắc đại đoàn kết
+                <span className="block whitespace-nowrap text-[clamp(2.5rem,7vw,6rem)] text-[#F4D35E]">
+                  ĐẠI ĐOÀN KẾT
                 </span>
               </h1>
               <p className="mt-6 max-w-2xl text-lg leading-8 text-white/86 md:text-xl">
@@ -535,7 +556,9 @@ function App() {
                 </a>
                 <button
                   type="button"
-                  onClick={() => gameRef.current?.scrollIntoView({ behavior: "smooth" })}
+                  onClick={() =>
+                    gameRef.current?.scrollIntoView({ behavior: "smooth" })
+                  }
                   className="inline-flex items-center gap-2 rounded-lg border border-white/20 bg-white/10 px-5 py-3 text-sm font-bold text-white backdrop-blur transition hover:bg-white/18"
                 >
                   Vào game ôn tập
@@ -560,8 +583,8 @@ function App() {
                   <div className="flex items-start gap-3">
                     <Quote className="mt-1 h-4 w-4 text-[#D64933]" />
                     <p className="text-sm leading-6 text-[#405047]">
-                      “Đoàn kết, đoàn kết, đại đoàn kết. Thành công, thành
-                      công, đại thành công.”
+                      “Đoàn kết, đoàn kết, đại đoàn kết. Thành công, thành công,
+                      đại thành công.”
                     </p>
                   </div>
                   <div className="h-px bg-black/10" />
@@ -576,10 +599,7 @@ function App() {
 
         <section id="tong-quan" className="py-20 md:py-28">
           <div className="mx-auto max-w-7xl px-4 md:px-8">
-            <SectionHeading
-              eyebrow="Tổng quan"
-              title="Nắm chương trong 3 phút"
-            />
+            <SectionHeading eyebrow="Tổng quan" title="Tóm Tắt Nhanh" />
 
             <div className="grid gap-4 md:grid-cols-4">
               {overviewCards.map((card, index) => (
@@ -594,8 +614,12 @@ function App() {
                   <p className="text-xs font-black uppercase tracking-[0.18em] text-[#D64933]">
                     {card.label}
                   </p>
-                  <h3 className="mt-3 text-2xl font-black leading-tight">{card.value}</h3>
-                  <p className="mt-3 text-sm leading-6 text-[#607069]">{card.text}</p>
+                  <h3 className="mt-3 text-2xl font-black leading-tight">
+                    {card.value}
+                  </h3>
+                  <p className="mt-3 text-sm leading-6 text-[#607069]">
+                    {card.text}
+                  </p>
                 </motion.div>
               ))}
             </div>
@@ -610,7 +634,9 @@ function App() {
                     <p className="text-sm font-black uppercase tracking-[0.18em] text-[#F4D35E]">
                       Logic của chương
                     </p>
-                    <h3 className="mt-1 text-2xl font-black">Dân tộc là gốc, quốc tế là sức mạnh bổ sung</h3>
+                    <h3 className="mt-1 text-2xl font-black">
+                      Dân tộc là gốc, quốc tế là sức mạnh
+                    </h3>
                   </div>
                 </div>
                 <p className="text-base leading-8 text-white/75">
@@ -670,7 +696,10 @@ function App() {
                       </div>
                       <div className="mt-5 grid gap-3">
                         {module.bullets.map((bullet) => (
-                          <div key={bullet} className="flex gap-3 text-sm leading-6 text-[#405047]">
+                          <div
+                            key={bullet}
+                            className="flex gap-3 text-sm leading-6 text-[#405047]"
+                          >
                             <CheckCircle2 className="mt-1 h-4 w-4 shrink-0 text-[#3E8E6C]" />
                             <span>{bullet}</span>
                           </div>
@@ -731,7 +760,10 @@ function App() {
           </div>
         </section>
 
-        <section id="moc-nho" className="bg-[#1F2421] py-20 text-white md:py-28">
+        <section
+          id="moc-nho"
+          className="bg-[#1F2421] py-20 text-white md:py-28"
+        >
           <div className="mx-auto max-w-7xl px-4 md:px-8">
             <div className="grid gap-12 lg:grid-cols-[0.75fr_1.25fr] lg:items-start">
               <div className="lg:sticky lg:top-24">
@@ -747,7 +779,10 @@ function App() {
                 </p>
                 <div className="mt-8 grid gap-3 sm:grid-cols-2 lg:grid-cols-1">
                   {forces.slice(0, 4).map((force) => (
-                    <div key={force.label} className="flex items-center gap-3 rounded-lg border border-white/10 bg-white/7 p-3">
+                    <div
+                      key={force.label}
+                      className="flex items-center gap-3 rounded-lg border border-white/10 bg-white/7 p-3"
+                    >
                       <span className={`h-9 w-2 rounded-full ${force.tone}`} />
                       <div>
                         <p className="text-sm font-black">{force.label}</p>
@@ -772,11 +807,15 @@ function App() {
                       <span className="grid h-12 w-12 place-items-center rounded-lg bg-[#F4D35E] text-[#1F2421]">
                         <CalendarDays className="h-6 w-6" />
                       </span>
-                      <p className="text-xl font-black text-[#F4D35E]">{item.mark}</p>
+                      <p className="text-xl font-black text-[#F4D35E]">
+                        {item.mark}
+                      </p>
                     </div>
                     <div>
                       <h3 className="text-2xl font-black">{item.title}</h3>
-                      <p className="mt-2 text-sm leading-6 text-white/72">{item.text}</p>
+                      <p className="mt-2 text-sm leading-6 text-white/72">
+                        {item.text}
+                      </p>
                     </div>
                   </motion.div>
                 ))}
@@ -819,7 +858,8 @@ function App() {
               <div className="mt-6 flex max-w-2xl gap-4 rounded-lg border border-white/12 bg-white/[0.06] p-5">
                 <Quote className="mt-1 h-6 w-6 shrink-0 text-[#F4D35E]" />
                 <p className="text-base font-semibold leading-8 text-white/82">
-                  Đoàn kết, đoàn kết, đại đoàn kết. Thành công, thành công, đại thành công.
+                  Đoàn kết, đoàn kết, đại đoàn kết. Thành công, thành công, đại
+                  thành công.
                 </p>
               </div>
             </div>
@@ -849,7 +889,8 @@ function App() {
                 </h3>
               </div>
               <p className="max-w-xl text-sm leading-6 text-white/58">
-                Mỗi câu trả lời của trợ lý sẽ hiện thêm nguồn riêng nếu backend tìm được citation từ vector store hoặc local RAG.
+                Mỗi câu trả lời của trợ lý sẽ hiện thêm nguồn riêng nếu backend
+                tìm được citation từ vector store hoặc local RAG.
               </p>
             </div>
 
@@ -859,10 +900,15 @@ function App() {
                   key={group.title}
                   className="rounded-lg border border-white/10 bg-white/[0.06] p-5"
                 >
-                  <h4 className="text-base font-black text-white">{group.title}</h4>
+                  <h4 className="text-base font-black text-white">
+                    {group.title}
+                  </h4>
                   <div className="mt-4 grid gap-3">
                     {group.items.map((source) => (
-                      <div key={source.label} className="flex gap-3 text-sm leading-6 text-white/70">
+                      <div
+                        key={source.label}
+                        className="flex gap-3 text-sm leading-6 text-white/70"
+                      >
                         <CheckCircle2 className="mt-1 h-4 w-4 shrink-0 text-[#F4D35E]" />
                         {source.href ? (
                           <a
@@ -874,7 +920,9 @@ function App() {
                             {source.label}
                           </a>
                         ) : (
-                          <span className="min-w-0 break-words">{source.label}</span>
+                          <span className="min-w-0 break-words">
+                            {source.label}
+                          </span>
                         )}
                       </div>
                     ))}
@@ -886,14 +934,20 @@ function App() {
 
           <div className="mt-12 flex flex-col gap-4 border-t border-white/10 pt-6 text-sm text-white/58 md:flex-row md:items-center md:justify-between">
             <p className="font-semibold text-white">
-              Tư tưởng Hồ Chí Minh về đại đoàn kết toàn dân tộc và đoàn kết quốc tế
+              Tư tưởng Hồ Chí Minh về đại đoàn kết toàn dân tộc và đoàn kết quốc
+              tế
             </p>
             <div className="flex flex-wrap gap-2">
-              {["Tổng quan", "Lý thuyết", "Luận điểm", "Mốc nhớ", "Game"].map((label) => (
-                <span key={label} className="rounded-lg bg-white/8 px-3 py-1.5 text-xs font-bold text-white/72">
-                  {label}
-                </span>
-              ))}
+              {["Tổng quan", "Lý thuyết", "Luận điểm", "Mốc nhớ", "Game"].map(
+                (label) => (
+                  <span
+                    key={label}
+                    className="rounded-lg bg-white/8 px-3 py-1.5 text-xs font-bold text-white/72"
+                  >
+                    {label}
+                  </span>
+                ),
+              )}
             </div>
           </div>
         </div>
@@ -923,7 +977,9 @@ function App() {
                 </span>
                 <div>
                   <h2 className="font-black">Trợ lý Chapter 5</h2>
-                  <p className="text-xs text-[#607069]">Tóm tắt, phân tích, luyện câu hỏi</p>
+                  <p className="text-xs text-[#607069]">
+                    Tóm tắt, phân tích, luyện câu hỏi
+                  </p>
                 </div>
               </div>
               <button
@@ -965,20 +1021,22 @@ function App() {
                     <ReactMarkdown remarkPlugins={[remarkGfm]}>
                       {message.text}
                     </ReactMarkdown>
-                    {message.role === "model" && message.citations && message.citations.length > 0 && (
-                      <div className="mt-3 flex flex-wrap gap-2 border-t border-black/10 pt-3">
-                        {message.citations.map((citation) => (
-                          <span
-                            key={citation}
-                            className="inline-flex max-w-full items-center gap-1.5 rounded-md bg-[#F7F2EA] px-2 py-1 text-[11px] font-bold leading-4 text-[#607069]"
-                            title={citation}
-                          >
-                            <BookOpen className="h-3 w-3 shrink-0 text-[#D64933]" />
-                            <span className="truncate">{citation}</span>
-                          </span>
-                        ))}
-                      </div>
-                    )}
+                    {message.role === "model" &&
+                      message.citations &&
+                      message.citations.length > 0 && (
+                        <div className="mt-3 flex flex-wrap gap-2 border-t border-black/10 pt-3">
+                          {message.citations.map((citation) => (
+                            <span
+                              key={citation}
+                              className="inline-flex max-w-full items-center gap-1.5 rounded-md bg-[#F7F2EA] px-2 py-1 text-[11px] font-bold leading-4 text-[#607069]"
+                              title={citation}
+                            >
+                              <BookOpen className="h-3 w-3 shrink-0 text-[#D64933]" />
+                              <span className="truncate">{citation}</span>
+                            </span>
+                          ))}
+                        </div>
+                      )}
                   </div>
                 ))}
                 {isLoading && (
@@ -989,7 +1047,10 @@ function App() {
               </div>
             </div>
 
-            <form onSubmit={handleSubmit} className="flex gap-2 border-t border-black/10 bg-white p-4">
+            <form
+              onSubmit={handleSubmit}
+              className="flex gap-2 border-t border-black/10 bg-white p-4"
+            >
               <input
                 value={inputValue}
                 onChange={(event) => setInputValue(event.target.value)}
