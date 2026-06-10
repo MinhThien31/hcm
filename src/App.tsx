@@ -950,6 +950,18 @@ function App() {
               )}
             </div>
           </div>
+
+          <div className="mt-6 border-t border-white/10 pt-6 text-center">
+            <a
+              href="https://thuvienphapluat.vn/phap-luat/ho-tro-phap-luat/mttq-keu-goi-ung-ho-lu-lut-o-dak-lak-khac-phuc-hau-qua-thien-tai-gay-ra-nhu-the-nao-toan-van-thu-ke-104420-242704.html"
+              target="_blank"
+              rel="noreferrer"
+              className="inline-flex items-center gap-2 font-bold text-[#F4D35E] underline decoration-[#F4D35E]/40 underline-offset-4 transition hover:text-white hover:decoration-white"
+            >
+              Dẫn Chứng Thực Tế
+              <ArrowUpRight className="h-4 w-4" />
+            </a>
+          </div>
         </div>
       </footer>
 
